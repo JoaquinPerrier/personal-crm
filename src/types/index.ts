@@ -17,6 +17,8 @@ export interface Contact {
     twitter?: string;
   };
   photoUrl?: string;
+  isFavorite?: boolean;
+  lastMet?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -35,5 +37,14 @@ export interface Reminder {
   dueDate: string;
   isRecurring: boolean;
   recurrenceRule?: string;
+  completed: boolean;
+}
+
+export interface FollowUp {
+  id: string;
+  contactId: string;
+  title: string;
+  description: string;
+  icon: 'note' | 'coffee' | 'forward' | 'gift' | 'call';
   completed: boolean;
 }

@@ -4,10 +4,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme';
 
+import DashboardScreen from '../screens/DashboardScreen';
 import ContactsScreen from '../screens/ContactsScreen';
 import ContactDetailScreen from '../screens/ContactDetailScreen';
 import RemindersScreen from '../screens/RemindersScreen';
-import NotesScreen from '../screens/NotesScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const ContactsStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -27,10 +28,11 @@ export default function AppNavigator() {
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName: keyof typeof Ionicons.glyphMap = 'people';
-          if (route.name === 'Contactos') iconName = focused ? 'people' : 'people-outline';
-          else if (route.name === 'Notas') iconName = focused ? 'document-text' : 'document-text-outline';
-          else if (route.name === 'Recordatorios') iconName = focused ? 'alarm' : 'alarm-outline';
+          let iconName: keyof typeof Ionicons.glyphMap = 'grid';
+          if (route.name === 'Dashboard') iconName = focused ? 'grid' : 'grid-outline';
+          else if (route.name === 'Contacts') iconName = focused ? 'people' : 'people-outline';
+          else if (route.name === 'Reminders') iconName = focused ? 'calendar' : 'calendar-outline';
+          else if (route.name === 'Profile') iconName = focused ? 'person' : 'person-outline';
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: colors.primary,
@@ -40,17 +42,20 @@ export default function AppNavigator() {
           borderTopColor: colors.border,
           paddingBottom: 8,
           paddingTop: 8,
-          height: 64,
+          height: 70,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '500',
+          fontSize: 11,
+          fontWeight: '600',
+          textTransform: 'uppercase',
+          letterSpacing: 0.5,
         },
       })}
     >
-      <Tab.Screen name="Contactos" component={ContactsStackNavigator} />
-      <Tab.Screen name="Notas" component={NotesScreen} />
-      <Tab.Screen name="Recordatorios" component={RemindersScreen} />
+      <Tab.Screen name="Dashboard" component={DashboardScreen} />
+      <Tab.Screen name="Contacts" component={ContactsStackNavigator} />
+      <Tab.Screen name="Reminders" component={RemindersScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }

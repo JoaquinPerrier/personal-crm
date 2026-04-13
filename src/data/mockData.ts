@@ -1,4 +1,4 @@
-import { Contact, Note, Reminder } from '../types';
+import { Contact, Note, Reminder, FollowUp } from '../types';
 
 export const mockContacts: Contact[] = [
   {
@@ -19,6 +19,8 @@ export const mockContacts: Contact[] = [
       instagram: '@joaquinperrier',
     },
     photoUrl: undefined,
+    isFavorite: true,
+    lastMet: '2024-03-20T14:30:00Z',
     createdAt: '2024-01-15T10:00:00Z',
     updatedAt: '2024-03-20T14:30:00Z',
   },
@@ -40,6 +42,8 @@ export const mockContacts: Contact[] = [
       twitter: '@mariag_pm',
     },
     photoUrl: undefined,
+    isFavorite: true,
+    lastMet: '2024-04-01T11:00:00Z',
     createdAt: '2024-02-10T09:00:00Z',
     updatedAt: '2024-04-05T11:00:00Z',
   },
@@ -120,6 +124,8 @@ export const mockContacts: Contact[] = [
       instagram: '@vale.ruiz.mkt',
     },
     photoUrl: undefined,
+    isFavorite: false,
+    lastMet: '2024-03-15T15:00:00Z',
     createdAt: '2024-02-28T15:00:00Z',
     updatedAt: '2024-03-30T08:00:00Z',
   },
@@ -200,5 +206,32 @@ export const mockReminders: Reminder[] = [
     dueDate: '2024-04-20T16:00:00Z',
     isRecurring: false,
     completed: true,
+  },
+];
+
+export const mockFollowUps: FollowUp[] = [
+  {
+    id: 'f1',
+    contactId: '1',
+    title: 'Handwritten Note to Dr. Aris',
+    description: 'Congratulate on the recent publication',
+    icon: 'note',
+    completed: false,
+  },
+  {
+    id: 'f2',
+    contactId: '2',
+    title: 'Coffee with Founders Circle',
+    description: 'Monthly sync at The Atrium Café',
+    icon: 'coffee',
+    completed: false,
+  },
+  {
+    id: 'f3',
+    contactId: '4',
+    title: 'Forward Article to Sarah',
+    description: 'The piece on architectural lighting we discussed',
+    icon: 'forward',
+    completed: false,
   },
 ];
