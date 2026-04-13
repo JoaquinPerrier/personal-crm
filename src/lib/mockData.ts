@@ -1,3 +1,6 @@
+export type ContactStatus = "warm" | "follow-up-due" | "new" | "cold" | null;
+export type ContactCategory = "all" | "business" | "personal" | "refer";
+
 export interface Contact {
   id: string;
   name: string;
@@ -11,10 +14,13 @@ export interface Contact {
   howWeMet?: string;
   sharedMemories?: string;
   tags?: string[];
+  category?: ContactCategory;
   socialLinks?: { linkedin?: string; instagram?: string; twitter?: string };
   photoUrl?: string;
   isFavorite?: boolean;
   lastMet?: string;
+  status?: ContactStatus;
+  activity?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -31,46 +37,59 @@ export interface FollowUp {
 export const mockContacts: Contact[] = [
   {
     id: "1",
-    name: "Julian Thorne",
-    company: "Atrium Ventures",
-    position: "Managing Partner",
+    name: "Marcus Thorne",
+    company: "New Venture",
+    position: "Founder",
     isFavorite: true,
-    lastMet: "2026-03-20T14:30:00Z",
+    lastMet: "2026-03-30T14:30:00Z",
     tags: ["networking", "work"],
+    category: "business",
+    status: "warm",
+    activity: "Last met 2 weeks ago",
     createdAt: "2024-01-15T10:00:00Z",
-    updatedAt: "2026-03-20T14:30:00Z",
+    updatedAt: "2026-03-30T14:30:00Z",
   },
   {
     id: "2",
-    name: "Elena Vance",
-    company: "DesignLab",
-    position: "Creative Director",
+    name: "Sophia Chen",
+    company: "Studio A",
+    position: "Design Director",
     isFavorite: true,
     lastMet: "2026-04-01T11:00:00Z",
     tags: ["networking"],
+    category: "business",
+    status: "follow-up-due",
+    activity: "Scheduled for tomorrow",
     createdAt: "2024-02-10T09:00:00Z",
     updatedAt: "2026-04-05T11:00:00Z",
   },
   {
     id: "3",
-    name: "Marcus Webb",
-    company: "Meridian Real Estate",
-    position: "Agent",
+    name: "Julian Voss",
+    company: "Form & Space",
+    position: "Architect",
     isFavorite: false,
-    lastMet: "2026-03-10T16:00:00Z",
+    lastMet: "2026-04-10T16:00:00Z",
     tags: ["networking", "personal"],
-    createdAt: "2024-03-01T16:00:00Z",
-    updatedAt: "2026-03-25T09:15:00Z",
+    category: "business",
+    status: "new",
+    activity: "Sent welcome note 3 days ago",
+    createdAt: "2026-04-10T16:00:00Z",
+    updatedAt: "2026-04-10T16:00:00Z",
   },
   {
     id: "4",
-    name: "Sarah Lin",
-    company: "Arc Studio",
-    position: "Architect",
+    name: "Elena Moretti",
+    company: "National Gallery",
+    position: "Curator",
     isFavorite: false,
-    tags: ["work"],
+    lastMet: "2026-03-10T08:00:00Z",
+    tags: ["personal"],
+    category: "personal",
+    status: "warm",
+    activity: "Coffee meeting last month",
     createdAt: "2024-01-05T08:00:00Z",
-    updatedAt: "2026-02-14T17:00:00Z",
+    updatedAt: "2026-03-10T17:00:00Z",
   },
   {
     id: "5",
@@ -80,6 +99,9 @@ export const mockContacts: Contact[] = [
     isFavorite: false,
     lastMet: "2026-02-20T12:00:00Z",
     tags: ["work", "networking"],
+    category: "refer",
+    status: "cold",
+    activity: "Last contact 2 months ago",
     createdAt: "2024-01-20T12:00:00Z",
     updatedAt: "2026-04-01T10:00:00Z",
   },
@@ -91,6 +113,9 @@ export const mockContacts: Contact[] = [
     isFavorite: false,
     lastMet: "2026-03-15T15:00:00Z",
     tags: ["networking"],
+    category: "business",
+    status: "warm",
+    activity: "Lunch 3 weeks ago",
     createdAt: "2024-02-28T15:00:00Z",
     updatedAt: "2026-03-30T08:00:00Z",
   },

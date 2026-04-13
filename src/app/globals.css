@@ -17,6 +17,10 @@
   --font-body: var(--font-inter);
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
   background: var(--color-neutral);
   color: var(--color-text);
