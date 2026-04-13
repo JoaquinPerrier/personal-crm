@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import AppHeader from "@/components/AppHeader";
+import Link from "next/link";
 import {
   mockContacts,
   getInitials,
@@ -157,7 +158,7 @@ function ContactRow({ contact }: { contact: Contact }) {
   const activityIcon = getActivityIcon(contact.activity);
 
   return (
-    <div className="flex items-center gap-4 rounded-2xl bg-surface p-4 shadow-sm transition-colors hover:bg-neutral">
+    <Link href={`/contacts/${contact.id}`} className="flex items-center gap-4 rounded-2xl bg-surface p-4 shadow-sm transition-colors hover:bg-neutral">
       {/* Avatar */}
       {contact.photoUrl ? (
         <img
@@ -210,6 +211,6 @@ function ContactRow({ contact }: { contact: Contact }) {
           </div>
         )}
       </div>
-    </div>
+    </Link>
   );
 }
