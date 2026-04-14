@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useT } from "@/lib/i18n";
 
 const tabs = [
   {
-    name: "Dashboard",
+    key: "nav.dashboard" as const,
     href: "/dashboard",
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -17,7 +18,7 @@ const tabs = [
     ),
   },
   {
-    name: "Contacts",
+    key: "nav.contacts" as const,
     href: "/contacts",
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -29,7 +30,7 @@ const tabs = [
     ),
   },
   {
-    name: "Reminders",
+    key: "nav.reminders" as const,
     href: "/reminders",
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -42,7 +43,7 @@ const tabs = [
     ),
   },
   {
-    name: "Profile",
+    key: "nav.profile" as const,
     href: "/profile",
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -55,6 +56,7 @@ const tabs = [
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const { t } = useT();
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-neutral-dark bg-surface py-2">
@@ -62,7 +64,7 @@ export default function BottomNav() {
         const active = pathname.startsWith(tab.href);
         return (
           <Link
-            key={tab.name}
+            key={tab.key}
             href={tab.href}
             className={`flex flex-col items-center gap-1 px-3 py-1 transition-colors ${
               active ? "text-primary" : "text-text-light"
@@ -70,7 +72,7 @@ export default function BottomNav() {
           >
             {tab.icon(active)}
             <span className="text-[10px] font-semibold uppercase tracking-wider">
-              {tab.name}
+              {t(tab.key)}
             </span>
           </Link>
         );

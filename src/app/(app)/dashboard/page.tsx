@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import AppHeader from "@/components/AppHeader";
+import { useT } from "@/lib/i18n";
 import {
   mockContacts,
   mockFollowUps as initialFollowUps,
@@ -20,6 +21,7 @@ const FOLLOW_UP_ICONS: Record<FollowUp["icon"], string> = {
 };
 
 export default function DashboardPage() {
+  const { t } = useT();
   const [followUps, setFollowUps] = useState(initialFollowUps);
   const priorityContacts = mockContacts.filter((c) => c.isFavorite);
   const totalCircles = mockContacts.length;
@@ -38,7 +40,7 @@ export default function DashboardPage() {
         {/* Relationship Pulse */}
         <div className="mt-2 flex items-center gap-2">
           <h2 className="font-heading text-xl font-bold text-primary">
-            Relationship Pulse
+            {t("dashboard.relationshipPulse")}
           </h2>
           <span className="h-2.5 w-2.5 rounded-full bg-secondary" />
         </div>
@@ -46,30 +48,26 @@ export default function DashboardPage() {
         {/* Network Health Card */}
         <div className="mt-4 rounded-3xl bg-primary p-6">
           <p className="text-[11px] font-semibold uppercase tracking-widest text-tertiary">
-            Network Health
+            {t("dashboard.networkHealth")}
           </p>
           <p className="mt-1 font-heading text-4xl font-bold text-white">
-            Thriving
+            {t("dashboard.thriving")}
           </p>
           <div className="mt-6 flex gap-8">
             <div>
               <p className="font-heading text-2xl font-bold text-tertiary">
                 {totalCircles}
               </p>
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-text-light">
-                Total
-                <br />
-                Circles
+              <p className="whitespace-pre-line text-[10px] font-semibold uppercase tracking-wide text-text-light">
+                {t("dashboard.totalCircles")}
               </p>
             </div>
             <div>
               <p className="font-heading text-2xl font-bold text-tertiary">
                 12
               </p>
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-text-light">
-                Due
-                <br />
-                Today
+              <p className="whitespace-pre-line text-[10px] font-semibold uppercase tracking-wide text-text-light">
+                {t("dashboard.dueToday")}
               </p>
             </div>
             <div>
@@ -77,7 +75,7 @@ export default function DashboardPage() {
                 84%
               </p>
               <p className="text-[10px] font-semibold uppercase tracking-wide text-text-light">
-                Pulse Rate
+                {t("dashboard.pulseRate")}
               </p>
             </div>
           </div>
@@ -90,13 +88,13 @@ export default function DashboardPage() {
             <path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7ZM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           <h3 className="mt-3 font-heading text-lg font-bold text-text">
-            Gifting Window
+            {t("dashboard.giftingWindow")}
           </h3>
           <p className="mt-1 text-sm leading-relaxed text-text-secondary">
-            3 key anniversaries are approaching in the next fortnight.
+            {t("dashboard.giftingDesc")}
           </p>
           <button className="mt-4 rounded-lg bg-surface px-4 py-2 text-xs font-bold text-text">
-            View Events
+            {t("dashboard.viewEvents")}
           </button>
         </div>
 
@@ -104,14 +102,14 @@ export default function DashboardPage() {
         <div className="mt-8 flex items-start justify-between">
           <div>
             <h2 className="font-heading text-xl font-bold text-primary">
-              Priority Contacts
+              {t("dashboard.priorityContacts")}
             </h2>
             <p className="text-sm text-text-secondary">
-              Deepen these connections this week
+              {t("dashboard.priorityDesc")}
             </p>
           </div>
           <button className="mt-1 text-sm font-semibold text-text">
-            See All &gt;
+            {t("dashboard.seeAll")}
           </button>
         </div>
 
@@ -137,7 +135,7 @@ export default function DashboardPage() {
                 {contact.name}
               </p>
               <p className="text-[11px] text-text-light">
-                Last met {getTimeAgo(contact.lastMet)}
+                {t("dashboard.lastMet")} {getTimeAgo(contact.lastMet)}
               </p>
               <div className="mt-3 flex gap-3">
                 <button className="flex h-9 w-9 items-center justify-center rounded-full bg-background text-primary">
@@ -158,7 +156,7 @@ export default function DashboardPage() {
 
         {/* Upcoming Follow-ups */}
         <h2 className="mt-8 font-heading text-xl font-bold text-primary">
-          Upcoming Follow-ups
+          {t("dashboard.upcomingFollowUps")}
         </h2>
 
         <div className="mt-4 space-y-3">

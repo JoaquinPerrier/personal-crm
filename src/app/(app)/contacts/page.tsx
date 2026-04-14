@@ -3,6 +3,7 @@
 import { useState } from "react";
 import AppHeader from "@/components/AppHeader";
 import Link from "next/link";
+import { useT } from "@/lib/i18n";
 import {
   mockContacts,
   getInitials,
@@ -11,25 +12,25 @@ import {
   type ContactStatus,
 } from "@/lib/mockData";
 
-const CATEGORIES: { key: ContactCategory; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "business", label: "Business" },
-  { key: "personal", label: "Personal" },
-  { key: "refer", label: "Refer" },
+const CATEGORY_KEYS: { key: ContactCategory; tKey: "contacts.all" | "contacts.business" | "contacts.personal" | "contacts.refer" }[] = [
+  { key: "all", tKey: "contacts.all" },
+  { key: "business", tKey: "contacts.business" },
+  { key: "personal", tKey: "contacts.personal" },
+  { key: "refer", tKey: "contacts.refer" },
 ];
 
-const STATUS_STYLES: Record<
-  NonNullable<ContactStatus>,
-  { bg: string; text: string; label: string }
-> = {
-  warm: { bg: "bg-orange-100", text: "text-orange-600", label: "WARM" },
-  "follow-up-due": {
-    bg: "bg-red-100",
-    text: "text-red-600",
-    label: "FOLLOW-UP DUE",
-  },
-  new: { bg: "bg-blue-100", text: "text-blue-600", label: "NEW" },
-  cold: { bg: "bg-gray-100", text: "text-gray-500", label: "COLD" },
+const STATUS_TKEYS: Record<NonNullable<ContactStatus>, "contacts.statusWarm" | "contacts.statusFollowUp" | "contacts.statusNew" | "contacts.statusCold"> = {
+  warm: "contacts.statusWarm",
+  "follow-up-due": "contacts.statusFollowUp",
+  new: "contacts.statusNew",
+  cold: "contacts.statusCold",
+};
+
+const STATUS_STYLES: Record<NonNullable<ContactStatus>, { bg: string; text: string }> = {
+  warm: { bg: "bg-orange-100", text: "text-orange-600" },
+  "follow-up-due": { bg: "bg-red-100", text: "text-red-600" },
+  new: { bg: "bg-blue-100", text: "text-blue-600" },
+  cold: { bg: "bg-gray-100", text: "text-gray-500" },
 };
 
 const ACTIVITY_ICONS: Record<string, string> = {
@@ -53,6 +54,7 @@ function getActivityIcon(activity?: string): string {
 }
 
 export default function ContactsPage() {
+  const { t } = useT();
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] =
     useState<ContactCategory>("all");
@@ -73,10 +75,10 @@ export default function ContactsPage() {
 
       <div className="px-5 pb-8">
       <h1 className="font-heading text-3xl font-bold text-text">
-        Your Network
+        {t("contacts.yourNetwork")}
       </h1>
       <p className="mt-1 text-sm text-text-secondary">
-        Nurturing {mockContacts.length} active connections
+        {t("contacts.nurturing", { count: mockContacts.length })}
       </p>
 
       {/* Search */}
@@ -97,7 +99,7 @@ export default function ContactsPage() {
         </svg>
         <input
           type="text"
-          placeholder="Search your atrium..."
+          placeholder={t("contacts.searchPlaceholder")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full bg-transparent text-sm text-text placeholder:text-text-light outline-none"
@@ -106,7 +108,7 @@ export default function ContactsPage() {
 
       {/* Category filters */}
       <div className="mt-5 flex gap-2">
-        {CATEGORIES.map((cat) => (
+        {CATEGORY_KEYS.map((cat) => (
           <button
             key={cat.key}
             onClick={() => setActiveCategory(cat.key)}
@@ -116,7 +118,7 @@ export default function ContactsPage() {
                 : "bg-surface text-text-secondary"
             }`}
           >
-            {cat.label}
+            {t(cat.tKey)}
           </button>
         ))}
       </div>
@@ -128,7 +130,7 @@ export default function ContactsPage() {
         ))}
         {filtered.length === 0 && (
           <p className="py-12 text-center text-sm text-text-light">
-            No contacts found
+            {t("contacts.noResults")}
           </p>
         )}
       </div>
@@ -157,7 +159,9 @@ export default function ContactsPage() {
 }
 
 function ContactRow({ contact }: { contact: Contact }) {
+  const { t } = useT();
   const statusStyle = contact.status ? STATUS_STYLES[contact.status] : null;
+  const statusLabel = contact.status ? t(STATUS_TKEYS[contact.status]) : null;
   const activityIcon = getActivityIcon(contact.activity);
 
   return (
@@ -181,17 +185,17 @@ function ContactRow({ contact }: { contact: Contact }) {
           <p className="truncate font-heading text-sm font-bold text-text">
             {contact.name}
           </p>
-          {statusStyle && (
+          {statusStyle && statusLabel && (
             <span
               className={`shrink-0 rounded-md px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide ${statusStyle.bg} ${statusStyle.text}`}
             >
-              {statusStyle.label}
+              {statusLabel}
             </span>
           )}
         </div>
         <p className="mt-0.5 truncate text-xs text-text-secondary">
           {contact.position}
-          {contact.company ? ` at ${contact.company}` : ""}
+          {contact.company ? ` ${t("contacts.at")} ${contact.company}` : ""}
         </p>
         {contact.activity && (
           <div className="mt-1 flex items-center gap-1.5">

@@ -2,15 +2,21 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-const CATEGORIES = ["Business", "Personal", "Referral"];
+import { useT } from "@/lib/i18n";
 
 export default function NewContactPage() {
   const router = useRouter();
+  const { t } = useT();
   const [fullName, setFullName] = useState("");
   const [company, setCompany] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(["Business"]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(["new.business"]);
   const [initialSpark, setInitialSpark] = useState("");
+
+  const CATEGORIES = [
+    { key: "new.business" as const, label: t("new.business") },
+    { key: "new.personal" as const, label: t("new.personal") },
+    { key: "new.referral" as const, label: t("new.referral") },
+  ];
 
   function toggleCategory(cat: string) {
     setSelectedCategories((prev) =>
@@ -28,7 +34,7 @@ export default function NewContactPage() {
           </svg>
         </button>
         <span className="font-heading text-base font-bold text-primary">
-          New Connection
+          {t("new.title")}
         </span>
         <div className="w-7" />
       </header>
@@ -36,22 +42,22 @@ export default function NewContactPage() {
       <div className="flex-1 px-6 pb-10">
         {/* Title */}
         <h1 className="mt-4 font-heading text-2xl font-bold text-text">
-          Capture the Spark
+          {t("new.heading")}
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-          Record the essence of this new relationship while the details are fresh.
+          {t("new.subtitle")}
         </p>
 
         {/* Full Name */}
         <fieldset className="mt-8">
           <label className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">
-            Full Name
+            {t("new.fullName")}
           </label>
           <input
             type="text"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            placeholder="Who did you meet?"
+            placeholder={t("new.fullNamePlaceholder")}
             className="mt-2 w-full rounded-xl border border-neutral-dark bg-surface px-4 py-3 text-sm text-text placeholder:text-text-light focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </fieldset>
@@ -59,13 +65,13 @@ export default function NewContactPage() {
         {/* Company / Context */}
         <fieldset className="mt-6">
           <label className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">
-            Company / Context
+            {t("new.companyContext")}
           </label>
           <input
             type="text"
             value={company}
             onChange={(e) => setCompany(e.target.value)}
-            placeholder="Organization or common ground"
+            placeholder={t("new.companyPlaceholder")}
             className="mt-2 w-full rounded-xl border border-neutral-dark bg-surface px-4 py-3 text-sm text-text placeholder:text-text-light focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </fieldset>
@@ -73,22 +79,22 @@ export default function NewContactPage() {
         {/* Relationship Category */}
         <fieldset className="mt-6">
           <label className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">
-            Relationship Category
+            {t("new.category")}
           </label>
           <div className="mt-3 flex flex-wrap gap-2">
             {CATEGORIES.map((cat) => {
-              const active = selectedCategories.includes(cat);
+              const active = selectedCategories.includes(cat.key);
               return (
                 <button
-                  key={cat}
-                  onClick={() => toggleCategory(cat)}
+                  key={cat.key}
+                  onClick={() => toggleCategory(cat.key)}
                   className={`rounded-full border px-5 py-2 text-xs font-semibold transition-colors ${
                     active
                       ? "border-primary bg-primary/10 text-primary"
                       : "border-neutral-dark bg-surface text-text-secondary hover:border-primary/40"
                   }`}
                 >
-                  {cat}
+                  {cat.label}
                 </button>
               );
             })}
@@ -103,13 +109,13 @@ export default function NewContactPage() {
         {/* Initial Spark */}
         <fieldset className="mt-6">
           <label className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">
-            Initial Spark
+            {t("new.initialSpark")}
           </label>
           <div className="relative mt-2">
             <textarea
               value={initialSpark}
               onChange={(e) => setInitialSpark(e.target.value)}
-              placeholder={"What stood out? Future gift ideas?\nShared interests?"}
+              placeholder={t("new.sparkPlaceholder")}
               rows={4}
               className="w-full resize-none rounded-xl border border-neutral-dark bg-surface px-4 py-3 text-sm text-text placeholder:text-text-light focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
@@ -118,7 +124,7 @@ export default function NewContactPage() {
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                 </svg>
-                Warm Lead
+                {t("new.warmLead")}
               </span>
             </div>
           </div>

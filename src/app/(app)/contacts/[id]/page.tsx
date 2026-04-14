@@ -3,14 +3,16 @@
 import { use } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useT } from "@/lib/i18n";
 import { mockContacts, getInitials } from "@/lib/mockData";
 
 const contactDetails: Record<
   string,
   {
-    badge?: string;
-    status: string;
-    lastSpoke: string;
+    badgeKey?: "detail.foundingMember" | "detail.innerCircle";
+    statusKey: "detail.warmConnection";
+    lastSpokeKey: "detail.lastSpoke" | "detail.lastSpokeWeek";
+    lastSpokeDays?: number;
     interests: string[];
     aspiration: string;
     lifeGoal: string;
@@ -24,9 +26,10 @@ const contactDetails: Record<
   }
 > = {
   "1": {
-    badge: "Founding Member",
-    status: "Warm Connection",
-    lastSpoke: "Last spoke 4 days ago",
+    badgeKey: "detail.foundingMember",
+    statusKey: "detail.warmConnection",
+    lastSpokeKey: "detail.lastSpoke",
+    lastSpokeDays: 4,
     interests: ["Pre-war Jazz", "Sustainable Aviation", "Archery", "Rare Coffee Beans"],
     aspiration:
       "Wants to establish a foundation for urban music education by 2026. Currently scouting locations in Chicago.",
@@ -45,9 +48,9 @@ const contactDetails: Record<
     location: "London, United Kingdom",
   },
   "2": {
-    badge: "Inner Circle",
-    status: "Warm Connection",
-    lastSpoke: "Last spoke 1 week ago",
+    badgeKey: "detail.innerCircle",
+    statusKey: "detail.warmConnection",
+    lastSpokeKey: "detail.lastSpokeWeek",
     interests: ["Typography", "Ceramics", "Architecture", "Matcha"],
     aspiration: "Open a design residency in Kyoto by 2027. Already has connections with local artisans.",
     lifeGoal: "Curate an exhibition at the Serpentine Gallery. Working on a proposal with two collaborators.",
@@ -77,16 +80,21 @@ export default function ContactDetailPage({
 }) {
   const { id } = use(params);
   const router = useRouter();
+  const { t } = useT();
   const contact = mockContacts.find((c) => c.id === id);
   const details = contactDetails[id] || contactDetails["1"];
 
   if (!contact) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <p className="text-text-secondary">Contact not found</p>
+        <p className="text-text-secondary">{t("detail.notFound")}</p>
       </div>
     );
   }
+
+  const lastSpokeText = details.lastSpokeKey === "detail.lastSpoke"
+    ? t("detail.lastSpoke", { days: details.lastSpokeDays ?? 0 })
+    : t("detail.lastSpokeWeek");
 
   return (
     <div className="mx-auto w-full max-w-lg">
@@ -130,9 +138,9 @@ export default function ContactDetailPage({
         </div>
 
         {/* Badge + Name */}
-        {details.badge && (
+        {details.badgeKey && (
           <p className="mt-5 text-[10px] font-bold uppercase tracking-widest text-secondary">
-            {details.badge}
+            {t(details.badgeKey)}
           </p>
         )}
         <h1 className="mt-1 font-heading text-3xl font-bold text-text">
@@ -157,18 +165,18 @@ export default function ContactDetailPage({
         <div className="mt-4 flex items-center gap-4 rounded-full bg-surface px-5 py-3 shadow-sm">
           <div className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full bg-secondary" />
-            <span className="text-xs font-bold text-text">{details.status}</span>
+            <span className="text-xs font-bold text-text">{t(details.statusKey)}</span>
           </div>
-          <span className="text-xs text-text-light">{details.lastSpoke}</span>
+          <span className="text-xs text-text-light">{lastSpokeText}</span>
         </div>
 
         {/* Quick Note */}
         <div className="mt-6 rounded-2xl bg-surface p-5 shadow-sm">
           <p className="text-xs font-bold uppercase tracking-wide text-primary">
-            Quick Note
+            {t("detail.quickNote")}
           </p>
           <p className="mt-3 text-sm text-text-light italic">
-            Capture a passing thought or a small detail...
+            {t("detail.quickNotePlaceholder")}
           </p>
           <div className="mt-4 flex items-center justify-between">
             <div className="flex gap-3">
@@ -184,7 +192,7 @@ export default function ContactDetailPage({
               </button>
             </div>
             <button className="rounded-xl bg-primary px-5 py-2 text-xs font-bold text-white">
-              Save Insight
+              {t("detail.saveInsight")}
             </button>
           </div>
         </div>
@@ -193,7 +201,7 @@ export default function ContactDetailPage({
         <div className="mt-8">
           <div className="flex items-center justify-between">
             <h2 className="font-heading text-2xl font-bold text-text">
-              The Gold Mine
+              {t("detail.goldMine")}
             </h2>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-white">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -204,7 +212,7 @@ export default function ContactDetailPage({
 
           {/* Deep Interests */}
           <p className="mt-5 text-[10px] font-bold uppercase tracking-widest text-text-secondary">
-            Deep Interests
+            {t("detail.deepInterests")}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             {details.interests.map((interest) => (
@@ -220,7 +228,7 @@ export default function ContactDetailPage({
           {/* Aspiration */}
           <div className="mt-6 border-l-4 border-primary pl-4">
             <h3 className="font-heading text-base font-bold text-text">
-              Aspiration
+              {t("detail.aspiration")}
             </h3>
             <p className="mt-1 text-sm leading-relaxed text-text-secondary">
               {details.aspiration}
@@ -230,7 +238,7 @@ export default function ContactDetailPage({
           {/* Life Goal */}
           <div className="mt-5 border-l-4 border-secondary pl-4">
             <h3 className="font-heading text-base font-bold text-text">
-              Life Goal
+              {t("detail.lifeGoal")}
             </h3>
             <p className="mt-1 text-sm leading-relaxed text-text-secondary">
               {details.lifeGoal}
@@ -242,7 +250,7 @@ export default function ContactDetailPage({
         <div className="mt-8">
           <div className="flex items-center justify-between">
             <h2 className="font-heading text-2xl font-bold text-text">
-              Context
+              {t("detail.context")}
             </h2>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -253,7 +261,7 @@ export default function ContactDetailPage({
 
           {/* Origins */}
           <p className="mt-5 text-[10px] font-bold uppercase tracking-widest text-text-secondary">
-            Origins
+            {t("detail.origins")}
           </p>
           <p className="mt-2 text-sm leading-relaxed text-text-secondary">
             {details.origins}
@@ -261,7 +269,7 @@ export default function ContactDetailPage({
 
           {/* Core Memories */}
           <p className="mt-6 text-[10px] font-bold uppercase tracking-widest text-text-secondary">
-            Core Memories
+            {t("detail.coreMemories")}
           </p>
           <div className="mt-3 space-y-4">
             {details.memories.map((m, i) => (
@@ -281,7 +289,7 @@ export default function ContactDetailPage({
         {/* Digital Presence */}
         <div className="mt-8 rounded-3xl bg-primary p-6">
           <h2 className="text-center font-heading text-xl font-bold text-white">
-            Digital Presence
+            {t("detail.digitalPresence")}
           </h2>
           <div className="mt-5 grid grid-cols-2 gap-3">
             {details.social.map((label) => (
@@ -301,25 +309,25 @@ export default function ContactDetailPage({
         {/* Contact Channels */}
         <div className="mt-8">
           <p className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">
-            Contact Channels
+            {t("detail.contactChannels")}
           </p>
           <div className="mt-4 space-y-4">
             <div>
-              <p className="text-xs text-secondary">Primary Email</p>
+              <p className="text-xs text-secondary">{t("detail.primaryEmail")}</p>
               <p className="mt-0.5 text-sm font-semibold text-text">
                 {details.email}
               </p>
             </div>
             <div>
               <p className="text-xs text-secondary">
-                Mobile{details.phoneLabel ? ` (${details.phoneLabel})` : ""}
+                {t("detail.mobile")}{details.phoneLabel ? ` (${details.phoneLabel})` : ""}
               </p>
               <p className="mt-0.5 text-sm font-semibold text-text">
                 {details.phone}
               </p>
             </div>
             <div>
-              <p className="text-xs text-secondary">Location</p>
+              <p className="text-xs text-secondary">{t("detail.location")}</p>
               <p className="mt-0.5 text-sm font-semibold text-text">
                 {details.location}
               </p>
@@ -334,7 +342,7 @@ export default function ContactDetailPage({
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M17 8h1a4 4 0 0 1 0 8h-1M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8Z" />
           </svg>
-          Schedule Coffee
+          {t("detail.scheduleCoffee")}
         </button>
       </div>
     </div>

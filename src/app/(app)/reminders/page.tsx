@@ -1,59 +1,8 @@
 "use client";
 
 import AppHeader from "@/components/AppHeader";
+import { useT } from "@/lib/i18n";
 import { getInitials } from "@/lib/mockData";
-
-const featured = {
-  badge: "Upcoming",
-  title: "Elena's 30th Birthday",
-  description:
-    "Coming up in 3 days. She recently mentioned wanting to try the new pottery studio in Soho.",
-};
-
-const warmConnection = {
-  name: "Marcus Thorne",
-  subtitle: "Follow-up: New Venture",
-  label: "Warm Connection",
-};
-
-const timeline = [
-  {
-    day: "Today",
-    name: "Julian Vance",
-    description: "Check in on the gallery opening he hosted last night.",
-    action: "Message Julian",
-    actionStyle: "outlined" as const,
-    icon: "chat",
-  },
-  {
-    day: "Tomorrow",
-    name: "Sophia Chen",
-    description: "Anniversary of joining the board. Acknowledge her impact.",
-    action: "Write Note",
-    actionStyle: "outlined" as const,
-    icon: "pen",
-  },
-  {
-    day: "Friday",
-    name: "Sarah & David",
-    description: "Scheduled Coffee at The Atrium Café.",
-    actions: ["Confirm", "Reschedule"],
-    icon: "calendar",
-  },
-];
-
-const reconnections = [
-  {
-    name: "Dr. Sarah Jenkins",
-    description: "Last spoke 4 months ago",
-    icon: "wave",
-  },
-  {
-    name: "Liam O'Connell",
-    description: "Missed follow-up regarding the portfolio review",
-    icon: "link",
-  },
-];
 
 const ICON_PATHS: Record<string, string> = {
   chat: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
@@ -93,6 +42,58 @@ function Icon({
 }
 
 export default function RemindersPage() {
+  const { t } = useT();
+
+  const featured = {
+    title: "Elena's 30th Birthday",
+    description:
+      "Coming up in 3 days. She recently mentioned wanting to try the new pottery studio in Soho.",
+  };
+
+  const warmConnection = {
+    name: "Marcus Thorne",
+    subtitle: "Follow-up: New Venture",
+  };
+
+  const timeline = [
+    {
+      dayKey: "reminders.today" as const,
+      name: "Julian Vance",
+      description: "Check in on the gallery opening he hosted last night.",
+      actionKey: "reminders.messageJulian" as const,
+      actionStyle: "outlined" as const,
+      icon: "chat",
+    },
+    {
+      dayKey: "reminders.tomorrow" as const,
+      name: "Sophia Chen",
+      description: "Anniversary of joining the board. Acknowledge her impact.",
+      actionKey: "reminders.writeNote" as const,
+      actionStyle: "outlined" as const,
+      icon: "pen",
+    },
+    {
+      dayKey: "reminders.friday" as const,
+      name: "Sarah & David",
+      description: "Scheduled Coffee at The Atrium Café.",
+      actionsKeys: ["reminders.confirm" as const, "reminders.reschedule" as const],
+      icon: "calendar",
+    },
+  ];
+
+  const reconnections = [
+    {
+      name: "Dr. Sarah Jenkins",
+      description: "Last spoke 4 months ago",
+      icon: "wave",
+    },
+    {
+      name: "Liam O'Connell",
+      description: "Missed follow-up regarding the portfolio review",
+      icon: "link",
+    },
+  ];
+
   return (
     <div className="mx-auto w-full max-w-lg">
       <AppHeader />
@@ -100,16 +101,16 @@ export default function RemindersPage() {
       <div className="px-5 pb-8">
         {/* Title */}
         <h1 className="font-heading text-3xl font-bold text-primary">
-          Reminders
+          {t("reminders.title")}
         </h1>
         <p className="mt-1 text-sm leading-relaxed text-text-secondary">
-          Nurturing your most valued connections this week.
+          {t("reminders.subtitle")}
         </p>
 
         {/* Featured upcoming */}
         <div className="mt-6 rounded-3xl bg-surface p-6 shadow-sm">
           <span className="inline-block rounded-full bg-tertiary/60 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-secondary">
-            Upcoming
+            {t("reminders.upcoming")}
           </span>
           <h2 className="mt-3 font-heading text-2xl font-bold text-text">
             {featured.title}
@@ -120,11 +121,11 @@ export default function RemindersPage() {
           <div className="mt-5 flex gap-3">
             <button className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-white">
               <Icon name="gift" size={14} className="text-white" />
-              Send Gift Idea
+              {t("reminders.sendGiftIdea")}
             </button>
             <button className="flex items-center gap-2 rounded-xl border-2 border-primary px-4 py-2.5 text-xs font-bold text-primary">
               <Icon name="coffee" size={14} className="text-primary" />
-              Schedule Coffee
+              {t("reminders.scheduleCoffee")}
             </button>
           </div>
         </div>
@@ -144,7 +145,7 @@ export default function RemindersPage() {
             <div className="mt-1.5 flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-secondary" />
               <span className="text-[10px] font-semibold uppercase tracking-widest text-secondary">
-                {warmConnection.label}
+                {t("reminders.warmConnection")}
               </span>
             </div>
           </div>
@@ -152,13 +153,11 @@ export default function RemindersPage() {
 
         {/* Timeline */}
         <div className="relative mt-8">
-          {/* Vertical line */}
           <div className="absolute top-2 left-0 h-full w-px bg-gradient-to-b from-secondary/60 via-secondary/30 to-transparent" />
 
           <div className="space-y-6 pl-6">
             {timeline.map((item, i) => (
               <div key={i} className="relative">
-                {/* Dot on timeline */}
                 <div className="absolute -left-6 top-0 flex h-3 w-3 -translate-x-1/2 items-center justify-center">
                   <span className="h-2.5 w-2.5 rounded-full border-2 border-secondary bg-surface" />
                 </div>
@@ -166,7 +165,7 @@ export default function RemindersPage() {
                 <div className="rounded-2xl bg-surface p-5 shadow-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
-                      {item.day}
+                      {t(item.dayKey)}
                     </span>
                     <div
                       className={`flex h-7 w-7 items-center justify-center rounded-lg ${
@@ -185,22 +184,22 @@ export default function RemindersPage() {
                     {item.description}
                   </p>
 
-                  {item.action && (
+                  {item.actionKey && (
                     <button className="mt-4 w-full rounded-xl border-2 border-neutral-dark py-2.5 text-xs font-bold uppercase tracking-wide text-text transition-colors hover:border-primary hover:text-primary">
                       <span className="flex items-center justify-center gap-2">
                         <Icon name={item.icon} size={13} />
-                        {item.action}
+                        {t(item.actionKey)}
                       </span>
                     </button>
                   )}
 
-                  {item.actions && (
+                  {item.actionsKeys && (
                     <div className="mt-4 flex gap-3">
                       <button className="flex-1 rounded-xl bg-primary py-2.5 text-xs font-bold uppercase tracking-wide text-white">
-                        {item.actions[0]}
+                        {t(item.actionsKeys[0])}
                       </button>
                       <button className="flex-1 rounded-xl border-2 border-neutral-dark py-2.5 text-xs font-bold uppercase tracking-wide text-text transition-colors hover:border-primary">
-                        {item.actions[1]}
+                        {t(item.actionsKeys[1])}
                       </button>
                     </div>
                   )}
@@ -214,7 +213,7 @@ export default function RemindersPage() {
         <div className="mt-10 flex items-center gap-2">
           <span className="h-2.5 w-2.5 rounded-full bg-primary" />
           <h2 className="font-heading text-xl font-bold text-text">
-            Reconnection Opportunities
+            {t("reminders.reconnection")}
           </h2>
         </div>
 
