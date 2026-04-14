@@ -82,6 +82,7 @@ const translations = {
     "new.initialSpark": "Initial Spark",
     "new.sparkPlaceholder": "What stood out? Future gift ideas?\nShared interests?",
     "new.warmLead": "Warm Lead",
+    "new.addToLedger": "Add to Ledger",
 
     // Reminders
     "reminders.title": "Reminders",
@@ -181,6 +182,7 @@ const translations = {
     "new.initialSpark": "Chispa Inicial",
     "new.sparkPlaceholder": "¿Qué te llamó la atención? ¿Ideas de regalo?\n¿Intereses en común?",
     "new.warmLead": "Lead Cálido",
+    "new.addToLedger": "Agregar al Ledger",
 
     // Reminders
     "reminders.title": "Recordatorios",

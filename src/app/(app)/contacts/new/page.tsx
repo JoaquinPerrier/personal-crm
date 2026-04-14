@@ -129,6 +129,11 @@ export default function NewContactPage() {
             </div>
           </div>
         </fieldset>
+
+        {/* Submit */}
+        <button className="mt-8 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-4 text-sm font-bold text-white shadow-lg shadow-primary/30 transition-transform hover:scale-[1.02] active:scale-[0.98]">
+          {t("new.addToLedger")}
+        </button>
       </div>
     </div>
   );
