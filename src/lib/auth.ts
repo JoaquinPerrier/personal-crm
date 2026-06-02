@@ -44,7 +44,7 @@ export async function getSessionUser(): Promise<User | null> {
   if (!token) return null;
   const session = await verifySessionToken(token);
   if (!session) return null;
-  return findUserById(session.userId) ?? null;
+  return (await findUserById(session.userId)) ?? null;
 }
 
 export async function getSessionFromRequest(
@@ -54,7 +54,7 @@ export async function getSessionFromRequest(
   if (!token) return null;
   const session = await verifySessionToken(token);
   if (!session) return null;
-  return findUserById(session.userId) ?? null;
+  return (await findUserById(session.userId)) ?? null;
 }
 
 export function getClientInfo(request: NextRequest) {

@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     const user = await getSessionFromRequest(request);
     if (user) {
       const { ip, userAgent } = getClientInfo(request);
-      logAuthAction(randomUUID(), user.id, "logout", ip ?? undefined, userAgent ?? undefined);
+      await logAuthAction(randomUUID(), user.id, "logout", ip ?? undefined, userAgent ?? undefined);
     }
     await clearSessionCookie();
     return jsonOk({ success: true });

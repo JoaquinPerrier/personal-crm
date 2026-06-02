@@ -37,16 +37,16 @@ export async function POST(request: NextRequest) {
       throw new ApiError(400, passwordError, "WEAK_PASSWORD");
     }
 
-    if (findUserByEmail(email)) {
+    if (await findUserByEmail(email)) {
       throw new ApiError(409, "Email already registered", "EMAIL_EXISTS");
     }
 
     const userId = randomUUID();
     const passwordHash = await hashPassword(password);
-    const user = createUser(userId, name.trim(), email.trim(), passwordHash);
+    const user = await createUser(userId, name.trim(), email.trim(), passwordHash);
 
     const { ip, userAgent } = getClientInfo(request);
-    logAuthAction(randomUUID(), userId, "register", ip ?? undefined, userAgent ?? undefined);
+    await logAuthAction(randomUUID(), userId, "register", ip ?? undefined, userAgent ?? undefined);
 
     const token = await createSessionToken(userId);
     await setSessionCookie(token);

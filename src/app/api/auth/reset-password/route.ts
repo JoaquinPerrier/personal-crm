@@ -29,17 +29,17 @@ export async function POST(request: NextRequest) {
       throw new ApiError(400, passwordError, "WEAK_PASSWORD");
     }
 
-    const resetToken = findValidResetToken(token);
+    const resetToken = await findValidResetToken(token);
     if (!resetToken) {
       throw new ApiError(400, "Invalid or expired reset token", "INVALID_TOKEN");
     }
 
     const passwordHash = await hashPassword(password);
-    updateUserPassword(resetToken.user_id, passwordHash);
-    markResetTokenUsed(resetToken.id);
+    await updateUserPassword(resetToken.user_id, passwordHash);
+    await markResetTokenUsed(resetToken.id);
 
     const { ip, userAgent } = getClientInfo(request);
-    logAuthAction(
+    await logAuthAction(
       randomUUID(),
       resetToken.user_id,
       "password_reset",

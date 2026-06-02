@@ -20,13 +20,13 @@ export async function POST(request: NextRequest) {
       throw new ApiError(400, "Email and password are required", "MISSING_FIELDS");
     }
 
-    const user = findUserByEmail(email);
+    const user = await findUserByEmail(email);
     if (!user || !(await verifyPassword(password, user.password_hash))) {
       throw new ApiError(401, "Invalid email or password", "INVALID_CREDENTIALS");
     }
 
     const { ip, userAgent } = getClientInfo(request);
-    logAuthAction(randomUUID(), user.id, "login", ip ?? undefined, userAgent ?? undefined);
+    await logAuthAction(randomUUID(), user.id, "login", ip ?? undefined, userAgent ?? undefined);
 
     const token = await createSessionToken(user.id);
     await setSessionCookie(token);

@@ -1,29 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-import { getContactById, updateContact } from "@/lib/db";
+import {
+  getContactById,
+  updateContact,
+  saveContactPhotoData,
+  getContactPhotoData,
+  clearContactPhotoData,
+} from "@/lib/db";
 import { getSessionFromRequest } from "@/lib/auth";
 import { ApiError, jsonOk, jsonError } from "@/lib/api-helpers";
-import {
-  saveContactPhoto,
-  deleteContactPhoto,
-  getContactPhotoPath,
-  contactPhotoUrl,
-  MAX_PHOTO_SIZE,
-  ALLOWED_TYPES,
-} from "@/lib/uploads";
+import { contactPhotoUrl, MAX_PHOTO_SIZE, ALLOWED_PHOTO_TYPES } from "@/lib/photo-utils";
 
 export const runtime = "nodejs";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
-const MIME_BY_EXT: Record<string, string> = {
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".png": "image/png",
-  ".webp": "image/webp",
-  ".gif": "image/gif",
-};
+const ALLOWED_TYPES = new Set<string>(ALLOWED_PHOTO_TYPES);
 
 export async function GET(request: NextRequest, context: RouteContext) {
   try {
@@ -33,23 +24,19 @@ export async function GET(request: NextRequest, context: RouteContext) {
     }
 
     const { id } = await context.params;
-    const contact = getContactById(user.id, id);
+    const contact = await getContactById(user.id, id);
     if (!contact || !contact.photoUrl) {
       throw new ApiError(404, "Photo not found", "NOT_FOUND");
     }
 
-    const filePath = getContactPhotoPath(user.id, id);
-    if (!filePath || !fs.existsSync(filePath)) {
+    const photo = await getContactPhotoData(user.id, id);
+    if (!photo) {
       throw new ApiError(404, "Photo not found", "NOT_FOUND");
     }
 
-    const ext = path.extname(filePath).toLowerCase();
-    const contentType = MIME_BY_EXT[ext] ?? "image/jpeg";
-    const buffer = fs.readFileSync(filePath);
-
-    return new NextResponse(buffer, {
+    return new NextResponse(new Uint8Array(photo.data), {
       headers: {
-        "Content-Type": contentType,
+        "Content-Type": photo.mimeType,
         "Cache-Control": "private, max-age=3600",
       },
     });
@@ -66,7 +53,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
     }
 
     const { id } = await context.params;
-    const existing = getContactById(user.id, id);
+    const existing = await getContactById(user.id, id);
     if (!existing) {
       throw new ApiError(404, "Contact not found", "NOT_FOUND");
     }
@@ -91,10 +78,10 @@ export async function POST(request: NextRequest, context: RouteContext) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    saveContactPhoto(user.id, id, buffer, file.type);
+    await saveContactPhotoData(user.id, id, buffer, file.type);
 
     const photoUrl = contactPhotoUrl(id);
-    const contact = updateContact(user.id, id, { photoUrl });
+    const contact = await updateContact(user.id, id, { photoUrl });
     if (!contact) {
       throw new ApiError(404, "Contact not found", "NOT_FOUND");
     }
@@ -113,13 +100,13 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
     }
 
     const { id } = await context.params;
-    const existing = getContactById(user.id, id);
+    const existing = await getContactById(user.id, id);
     if (!existing) {
       throw new ApiError(404, "Contact not found", "NOT_FOUND");
     }
 
-    deleteContactPhoto(user.id, id);
-    const contact = updateContact(user.id, id, { photoUrl: null });
+    await clearContactPhotoData(user.id, id);
+    const contact = await updateContact(user.id, id, { photoUrl: null });
     if (!contact) {
       throw new ApiError(404, "Contact not found", "NOT_FOUND");
     }

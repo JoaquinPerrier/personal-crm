@@ -19,17 +19,17 @@ export async function POST(request: NextRequest) {
       throw new ApiError(400, "Valid email is required", "INVALID_EMAIL");
     }
 
-    const user = findUserByEmail(email);
+    const user = await findUserByEmail(email);
     const message =
       "If an account exists with that email, you will receive reset instructions.";
 
     if (user) {
       const token = randomUUID();
       const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString();
-      createPasswordResetToken(randomUUID(), user.id, token, expiresAt);
+      await createPasswordResetToken(randomUUID(), user.id, token, expiresAt);
 
       const { ip, userAgent } = getClientInfo(request);
-      logAuthAction(
+      await logAuthAction(
         randomUUID(),
         user.id,
         "password_reset_request",

@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     if (!user) {
       throw new ApiError(401, "Not authenticated", "UNAUTHORIZED");
     }
-    const contacts = getContactsByUser(user.id);
+    const contacts = await getContactsByUser(user.id);
     return jsonOk({ contacts });
   } catch (error) {
     return jsonError(error);
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     const validCategories: ContactCategory[] = ["business", "personal", "refer"];
-    const contact = createContact(user.id, randomUUID(), {
+    const contact = await createContact(user.id, randomUUID(), {
       name: name.trim(),
       company: company?.trim() || undefined,
       position: position?.trim() || undefined,

@@ -20,7 +20,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
     }
 
     const { id } = await context.params;
-    const contact = getContactById(user.id, id);
+    const contact = await getContactById(user.id, id);
     if (!contact) {
       throw new ApiError(404, "Contact not found", "NOT_FOUND");
     }
@@ -57,7 +57,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
       category: validCategories.includes(body.category) ? body.category : undefined,
     };
 
-    const contact = updateContact(user.id, id, updateData);
+    const contact = await updateContact(user.id, id, updateData);
     if (!contact) {
       throw new ApiError(404, "Contact not found", "NOT_FOUND");
     }
@@ -76,7 +76,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
     }
 
     const { id } = await context.params;
-    const deleted = deleteContact(user.id, id);
+    const deleted = await deleteContact(user.id, id);
     if (!deleted) {
       throw new ApiError(404, "Contact not found", "NOT_FOUND");
     }
