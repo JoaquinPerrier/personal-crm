@@ -1,15 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useState, FormEvent, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, FormEvent, Suspense, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth, ApiClientError } from "@/lib/auth-context";
 
 function LoginForm() {
-  const { login } = useAuth();
+  const { login, user, loading: authLoading } = useAuth();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/dashboard";
   const resetSuccess = searchParams.get("reset") === "success";
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace(redirect);
+    }
+  }, [authLoading, user, router, redirect]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

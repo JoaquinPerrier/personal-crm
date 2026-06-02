@@ -80,8 +80,9 @@ export async function POST(request: NextRequest, context: RouteContext) {
     const buffer = Buffer.from(await file.arrayBuffer());
     await saveContactPhotoData(user.id, id, buffer, file.type);
 
-    const photoUrl = contactPhotoUrl(id);
-    const contact = await updateContact(user.id, id, { photoUrl });
+    const contact = await updateContact(user.id, id, {
+      photoUrl: contactPhotoUrl(id),
+    });
     if (!contact) {
       throw new ApiError(404, "Contact not found", "NOT_FOUND");
     }

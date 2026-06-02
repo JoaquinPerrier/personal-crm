@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { getInitials } from "@/lib/utils";
 import type { Contact } from "@/lib/types";
 
@@ -18,16 +21,23 @@ export default function ContactAvatar({
   className = "",
 }: ContactAvatarProps) {
   const { box, text } = SIZE_CLASSES[size];
+  const [imgError, setImgError] = useState(false);
+
   const photoSrc = contact.photoUrl
     ? `${contact.photoUrl}${contact.photoUrl.includes("?") ? "&" : "?"}t=${new Date(contact.updatedAt).getTime()}`
     : null;
 
-  if (photoSrc) {
+  useEffect(() => {
+    setImgError(false);
+  }, [contact.photoUrl, contact.updatedAt]);
+
+  if (photoSrc && !imgError) {
     return (
       <img
         src={photoSrc}
-        alt={contact.name}
+        alt=""
         className={`${box} shrink-0 rounded-full object-cover ${className}`}
+        onError={() => setImgError(true)}
       />
     );
   }

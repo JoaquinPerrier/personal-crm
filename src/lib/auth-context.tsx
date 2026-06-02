@@ -31,8 +31,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { user } = await api.me();
       setUser(user);
-    } catch {
+    } catch (err) {
       setUser(null);
+      if (err instanceof ApiClientError && err.status === 401) {
+        await api.logout().catch(() => {});
+      }
     }
   }, []);
 

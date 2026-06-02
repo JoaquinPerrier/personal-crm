@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useT } from "@/lib/i18n";
 import { api, ApiClientError } from "@/lib/api-client";
 import { getInitials } from "@/lib/utils";
@@ -23,12 +23,28 @@ export default function ContactPhoto({
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [error, setError] = useState("");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [imgError, setImgError] = useState(false);
 
   const dimensions = size === "lg" ? "h-28 w-28" : "h-12 w-12";
   const textSize = size === "lg" ? "text-3xl" : "text-sm";
+
   const photoSrc = contact.photoUrl
     ? `${contact.photoUrl}${contact.photoUrl.includes("?") ? "&" : "?"}t=${new Date(contact.updatedAt).getTime()}`
     : null;
+
+  const displaySrc = previewUrl ?? (photoSrc && !imgError ? photoSrc : null);
+
+  useEffect(() => {
+    setImgError(false);
+    setPreviewUrl(null);
+  }, [contact.id, contact.photoUrl, contact.updatedAt]);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -42,11 +58,19 @@ export default function ContactPhoto({
     }
 
     setError("");
+    setImgError(false);
+    const localPreview = URL.createObjectURL(file);
+    setPreviewUrl(localPreview);
     setUploading(true);
+
     try {
       const { contact: updated } = await api.uploadContactPhoto(contact.id, file);
+      URL.revokeObjectURL(localPreview);
+      setPreviewUrl(null);
       onUpdated(updated);
     } catch (err) {
+      URL.revokeObjectURL(localPreview);
+      setPreviewUrl(null);
       setError(err instanceof ApiClientError ? err.message : t("common.error"));
     } finally {
       setUploading(false);
@@ -60,6 +84,8 @@ export default function ContactPhoto({
     setRemoving(true);
     try {
       const { contact: updated } = await api.removeContactPhoto(contact.id);
+      setImgError(false);
+      setPreviewUrl(null);
       onUpdated(updated);
     } catch (err) {
       setError(err instanceof ApiClientError ? err.message : t("common.error"));
@@ -80,11 +106,12 @@ export default function ContactPhoto({
           className={`group relative overflow-hidden rounded-2xl bg-tertiary shadow-lg transition-opacity ${dimensions} ${busy ? "opacity-60" : "hover:ring-2 hover:ring-primary/40"}`}
           aria-label={t("detail.changePhoto")}
         >
-          {photoSrc ? (
+          {displaySrc ? (
             <img
-              src={photoSrc}
-              alt={contact.name}
-              className="h-full w-full object-cover"
+              src={displaySrc}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
+              onError={() => setImgError(true)}
             />
           ) : (
             <span className={`flex h-full w-full items-center justify-center font-heading font-bold text-primary ${textSize}`}>

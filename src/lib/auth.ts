@@ -42,9 +42,20 @@ export async function getSessionUser(): Promise<User | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get(COOKIE_NAME)?.value;
   if (!token) return null;
+
   const session = await verifySessionToken(token);
-  if (!session) return null;
-  return (await findUserById(session.userId)) ?? null;
+  if (!session) {
+    await clearSessionCookie();
+    return null;
+  }
+
+  const user = await findUserById(session.userId);
+  if (!user) {
+    await clearSessionCookie();
+    return null;
+  }
+
+  return user;
 }
 
 export async function getSessionFromRequest(
@@ -52,9 +63,14 @@ export async function getSessionFromRequest(
 ): Promise<User | null> {
   const token = request.cookies.get(COOKIE_NAME)?.value;
   if (!token) return null;
+
   const session = await verifySessionToken(token);
   if (!session) return null;
-  return (await findUserById(session.userId)) ?? null;
+
+  const user = await findUserById(session.userId);
+  if (!user) return null;
+
+  return user;
 }
 
 export function getClientInfo(request: NextRequest) {

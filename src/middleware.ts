@@ -3,7 +3,6 @@ import type { NextRequest } from "next/server";
 import { verifySessionToken, COOKIE_NAME } from "@/lib/session";
 
 const PROTECTED_PREFIXES = ["/dashboard", "/contacts", "/reminders", "/profile"];
-const AUTH_PAGES = ["/login", "/register", "/forgot-password", "/reset-password"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -14,9 +13,6 @@ export async function middleware(request: NextRequest) {
   const isProtected = PROTECTED_PREFIXES.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`)
   );
-  const isAuthPage = AUTH_PAGES.some(
-    (p) => pathname === p || pathname.startsWith(`${p}/`)
-  );
 
   if (isProtected && !isAuthenticated) {
     const loginUrl = new URL("/login", request.url);
@@ -24,9 +20,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (isAuthPage && isAuthenticated) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
+  // Don't redirect away from login based on JWT alone — the token may be
+  // valid but the user may no longer exist in the DB (e.g. after a DB migration).
+  // The login page handles redirect client-side once /api/auth/me confirms the session.
 
   return NextResponse.next();
 }

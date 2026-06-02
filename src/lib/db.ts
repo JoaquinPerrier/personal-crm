@@ -448,6 +448,20 @@ export async function countContactsByUser(userId: string): Promise<number> {
   return Number(row.count);
 }
 
+function bufferFromStoredPhoto(raw: unknown): Buffer | null {
+  if (raw == null) return null;
+  if (Buffer.isBuffer(raw)) return raw;
+  if (raw instanceof Uint8Array) return Buffer.from(raw);
+  if (raw instanceof ArrayBuffer) return Buffer.from(raw);
+  if (typeof raw === "string") {
+    // Stored as base64 text (preferred) — also handles legacy plain strings
+    const buf = Buffer.from(raw, "base64");
+    if (buf.length > 0) return buf;
+    return Buffer.from(raw, "binary");
+  }
+  return null;
+}
+
 export async function saveContactPhotoData(
   userId: string,
   contactId: string,
@@ -456,7 +470,7 @@ export async function saveContactPhotoData(
 ) {
   await execute(
     `UPDATE contacts SET photo_data = ?, photo_mime = ? WHERE id = ? AND user_id = ?`,
-    [new Uint8Array(data), mimeType, contactId, userId]
+    [data.toString("base64"), mimeType, contactId, userId]
   );
 }
 
@@ -467,8 +481,8 @@ export async function getContactPhotoData(userId: string, contactId: string) {
   );
   const row = result.rows[0] as Record<string, unknown> | undefined;
   if (!row || row.photo_data == null) return null;
-  const raw = row.photo_data;
-  const data = raw instanceof Uint8Array ? Buffer.from(raw) : Buffer.from(String(raw));
+  const data = bufferFromStoredPhoto(row.photo_data);
+  if (!data || data.length === 0) return null;
   return { data, mimeType: String(row.photo_mime ?? "image/jpeg") };
 }
 
