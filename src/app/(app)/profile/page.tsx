@@ -2,6 +2,8 @@
 
 import AppHeader from "@/components/AppHeader";
 import { useT, type Locale } from "@/lib/i18n";
+import { useAuth } from "@/lib/auth-context";
+import { getInitials } from "@/lib/utils";
 
 const LOCALES: { code: Locale; labelKey: "lang.en" | "lang.es" }[] = [
   { code: "en", labelKey: "lang.en" },
@@ -10,32 +12,42 @@ const LOCALES: { code: Locale; labelKey: "lang.en" | "lang.es" }[] = [
 
 export default function ProfilePage() {
   const { t, locale, setLocale } = useT();
+  const { user, logout, loading } = useAuth();
 
   return (
     <div className="mx-auto w-full max-w-lg">
       <AppHeader />
 
       <div className="px-5 pb-8">
-        <h1 className="font-heading text-3xl font-bold text-text">
-          {t("nav.profile")}
-        </h1>
+        <h1 className="font-heading text-3xl font-bold text-text">{t("nav.profile")}</h1>
 
-        {/* Avatar */}
-        <div className="mt-6 flex items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary font-heading text-xl font-bold text-white">
-            JT
+        {loading ? (
+          <div className="mt-12 flex justify-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
           </div>
-          <div>
-            <p className="font-heading text-lg font-bold text-text">James Turner</p>
-            <p className="text-sm text-text-secondary">james.turner@email.com</p>
-          </div>
-        </div>
+        ) : user ? (
+          <>
+            <div className="mt-6 flex items-center gap-4">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary font-heading text-xl font-bold text-white">
+                {getInitials(user.name)}
+              </div>
+              <div>
+                <p className="font-heading text-lg font-bold text-text">{user.name}</p>
+                <p className="text-sm text-text-secondary">{user.email}</p>
+              </div>
+            </div>
 
-        {/* Language selector */}
+            <button
+              onClick={() => logout()}
+              className="mt-8 w-full rounded-xl border border-neutral-dark py-3 text-sm font-semibold text-text-secondary transition-colors hover:border-red-300 hover:text-red-600"
+            >
+              {t("auth.logout")}
+            </button>
+          </>
+        ) : null}
+
         <div className="mt-10">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">
-            {t("lang.label")}
-          </p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">{t("lang.label")}</p>
           <div className="mt-3 flex gap-3">
             {LOCALES.map((l) => (
               <button
