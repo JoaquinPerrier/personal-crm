@@ -25,10 +25,10 @@ export default function Hero() {
         {/* Buttons */}
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <a
-            href="#"
+            href="/login"
             className="w-full rounded-full bg-primary px-8 py-3.5 text-center text-sm font-semibold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary-light hover:shadow-xl sm:w-auto"
           >
-            Get Started
+            Login
           </a>
           <a
             href="#philosophy"

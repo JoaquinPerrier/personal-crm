@@ -66,6 +66,9 @@ const translations = {
     "detail.warmConnection": "Warm Connection",
     "detail.lastSpoke": "Last spoke {days} days ago",
     "detail.lastSpokeWeek": "Last spoke 1 week ago",
+    "detail.changePhoto": "Change profile photo",
+    "detail.photoHint": "Tap to upload a photo (max 5 MB)",
+    "detail.removePhoto": "Remove photo",
 
     // New Contact
     "new.title": "New Connection",
@@ -211,6 +214,9 @@ const translations = {
     "detail.warmConnection": "Conexión Cálida",
     "detail.lastSpoke": "Última charla hace {days} días",
     "detail.lastSpokeWeek": "Última charla hace 1 semana",
+    "detail.changePhoto": "Cambiar foto de perfil",
+    "detail.photoHint": "Tocá para subir una foto (máx. 5 MB)",
+    "detail.removePhoto": "Quitar foto",
 
     // New Contact
     "new.title": "Nueva Conexión",

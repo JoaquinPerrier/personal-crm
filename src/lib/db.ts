@@ -316,13 +316,16 @@ export function updateContact(
 
   const now = new Date().toISOString();
   const merged = { ...existing, ...input, updatedAt: now };
+  if (input.photoUrl === null) {
+    merged.photoUrl = undefined;
+  }
 
   getDb()
     .prepare(
       `UPDATE contacts SET
         name = ?, company = ?, position = ?, phone = ?, email = ?,
         interests = ?, aspirations = ?, how_we_met = ?, shared_memories = ?,
-        category = ?, social_links = ?, is_favorite = ?, last_met = ?,
+        category = ?, social_links = ?, photo_url = ?, is_favorite = ?, last_met = ?,
         status = ?, activity = ?, notes = ?, location = ?, updated_at = ?
        WHERE id = ? AND user_id = ?`
     )
@@ -338,6 +341,7 @@ export function updateContact(
       merged.sharedMemories ?? null,
       merged.category ?? null,
       merged.socialLinks ? JSON.stringify(merged.socialLinks) : null,
+      merged.photoUrl ?? null,
       merged.isFavorite ? 1 : 0,
       merged.lastMet ?? null,
       merged.status ?? null,

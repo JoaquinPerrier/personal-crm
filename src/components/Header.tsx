@@ -67,10 +67,10 @@ export default function Header() {
             Features
           </a>
           <a
-            href="#"
+            href="/login"
             className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-light"
           >
-            Get Started
+            Login
           </a>
         </nav>
       </div>
@@ -94,11 +94,11 @@ export default function Header() {
               Features
             </a>
             <a
-              href="#"
+              href="/login"
               className="inline-block rounded-full bg-primary px-5 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-primary-light"
               onClick={() => setMenuOpen(false)}
             >
-              Get Started
+              Login
             </a>
           </div>
         </nav>

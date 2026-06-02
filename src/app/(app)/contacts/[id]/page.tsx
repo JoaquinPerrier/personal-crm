@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useT } from "@/lib/i18n";
 import { api, ApiClientError } from "@/lib/api-client";
-import { getInitials, getDaysSince } from "@/lib/utils";
+import ContactPhoto from "@/components/ContactPhoto";
+import { getDaysSince } from "@/lib/utils";
 import type { Contact } from "@/lib/types";
 
 export default function ContactDetailPage({
@@ -89,9 +90,10 @@ export default function ContactDetailPage({
 
       <div className="px-5 pb-8">
         <div className="flex justify-center">
-          <div className="flex h-28 w-28 items-center justify-center rounded-2xl bg-tertiary font-heading text-3xl font-bold text-primary shadow-lg">
-            {getInitials(contact.name)}
-          </div>
+          <ContactPhoto
+            contact={contact}
+            onUpdated={setContact}
+          />
         </div>
 
         <h1 className="mt-5 font-heading text-3xl font-bold text-text">{contact.name}</h1>

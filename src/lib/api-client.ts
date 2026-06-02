@@ -115,6 +115,34 @@ export const api = {
       method: "DELETE",
     });
   },
+
+  async uploadContactPhoto(id: string, file: File) {
+    const formData = new FormData();
+    formData.append("photo", file);
+
+    const res = await fetch(`/api/contacts/${id}/photo`, {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new ApiClientError(
+        res.status,
+        data.error || "Something went wrong",
+        data.code
+      );
+    }
+    return data as { contact: import("./types").Contact };
+  },
+
+  removeContactPhoto(id: string) {
+    return request<{ contact: import("./types").Contact }>(
+      `/api/contacts/${id}/photo`,
+      { method: "DELETE" }
+    );
+  },
 };
 
 export { ApiClientError };

@@ -62,4 +62,5 @@ export interface UpdateContactInput extends Partial<CreateContactInput> {
   activity?: string;
   sharedMemories?: string;
   socialLinks?: Contact["socialLinks"];
+  photoUrl?: string | null;
 }
