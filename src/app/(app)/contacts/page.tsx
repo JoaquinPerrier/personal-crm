@@ -5,7 +5,7 @@ import AppHeader from "@/components/AppHeader";
 import Link from "next/link";
 import { useT } from "@/lib/i18n";
 import { api, ApiClientError } from "@/lib/api-client";
-import { getInitials } from "@/lib/utils";
+import ContactAvatar from "@/components/ContactAvatar";
 import type { Contact, ContactCategory, ContactStatus } from "@/lib/types";
 
 const CATEGORY_KEYS: { key: ContactCategory; tKey: "contacts.all" | "contacts.business" | "contacts.personal" | "contacts.refer" }[] = [
@@ -182,13 +182,7 @@ function ContactRow({ contact }: { contact: Contact }) {
 
   return (
     <Link href={`/contacts/${contact.id}`} className="flex items-center gap-4 rounded-2xl bg-surface p-4 shadow-sm transition-colors hover:bg-neutral">
-      {contact.photoUrl ? (
-        <img src={contact.photoUrl} alt={contact.name} className="h-12 w-12 shrink-0 rounded-full object-cover" />
-      ) : (
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-tertiary font-heading text-sm font-bold text-primary">
-          {getInitials(contact.name)}
-        </div>
-      )}
+      <ContactAvatar contact={contact} size="sm" />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <p className="truncate font-heading text-sm font-bold text-text">{contact.name}</p>

@@ -5,7 +5,8 @@ import AppHeader from "@/components/AppHeader";
 import Link from "next/link";
 import { useT } from "@/lib/i18n";
 import { api, ApiClientError } from "@/lib/api-client";
-import { getTimeAgo, getInitials } from "@/lib/utils";
+import { getTimeAgo } from "@/lib/utils";
+import ContactAvatar from "@/components/ContactAvatar";
 import type { Contact } from "@/lib/types";
 
 export default function DashboardPage() {
@@ -101,9 +102,7 @@ export default function DashboardPage() {
                       href={`/contacts/${contact.id}`}
                       className="flex w-40 shrink-0 flex-col items-center rounded-2xl bg-surface p-4 shadow-sm"
                     >
-                      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-tertiary font-heading text-lg font-bold text-primary">
-                        {getInitials(contact.name)}
-                      </div>
+                      <ContactAvatar contact={contact} size="md" />
                       <p className="mt-3 text-sm font-bold text-text">{contact.name}</p>
                       <p className="text-[11px] text-text-light">
                         {t("dashboard.lastMet")} {getTimeAgo(contact.lastMet || contact.updatedAt)}
