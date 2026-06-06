@@ -1,5 +1,8 @@
+import type { ContactExtendedProfile } from "./contact-profile";
+
 export type ContactStatus = "warm" | "follow-up-due" | "new" | "cold" | null;
 export type ContactCategory = "all" | "business" | "personal" | "refer";
+export type { ContactExtendedProfile };
 
 export interface Contact {
   id: string;
@@ -24,6 +27,7 @@ export interface Contact {
   notes?: string;
   location?: string;
   referredBy?: string;
+  extendedProfile?: ContactExtendedProfile;
   createdAt: string;
   updatedAt: string;
 }
@@ -66,4 +70,5 @@ export interface UpdateContactInput extends Partial<CreateContactInput> {
   sharedMemories?: string;
   socialLinks?: Contact["socialLinks"];
   photoUrl?: string | null;
+  extendedProfile?: ContactExtendedProfile;
 }

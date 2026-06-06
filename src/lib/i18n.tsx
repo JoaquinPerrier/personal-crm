@@ -159,6 +159,12 @@ const translations = {
     "contacts.loadError": "Could not load contacts",
     "contacts.editContact": "Edit Contact",
     "contacts.deleteConfirm": "Delete this contact?",
+
+    // Mackay 66 profile
+    "profile.mackayTitle": "Deep Profile (Mackay 66)",
+    "profile.mackaySubtitle": "Expand each section to capture what matters about this relationship.",
+    "profile.progress": "{answered} of {total} questions answered",
+    "profile.sectionProgress": "{answered} of {total} answered",
   },
   es: {
     // BottomNav
@@ -314,6 +320,12 @@ const translations = {
     "contacts.loadError": "No se pudieron cargar los contactos",
     "contacts.editContact": "Editar contacto",
     "contacts.deleteConfirm": "¿Eliminar este contacto?",
+
+    // Mackay 66 profile
+    "profile.mackayTitle": "Perfil profundo (Mackay 66)",
+    "profile.mackaySubtitle": "Expandí cada sección para registrar lo que importa de esta relación.",
+    "profile.progress": "{answered} de {total} preguntas respondidas",
+    "profile.sectionProgress": "{answered} de {total} respondidas",
   },
 } as const;
 

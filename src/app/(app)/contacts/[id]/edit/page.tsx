@@ -4,7 +4,13 @@ import { use, useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useT } from "@/lib/i18n";
 import { api, ApiClientError } from "@/lib/api-client";
-import type { Contact, ContactCategory } from "@/lib/types";
+import type { ContactCategory } from "@/lib/types";
+import ContactProfileAccordion from "@/components/ContactProfileAccordion";
+import {
+  emptyExtendedProfile,
+  type ContactExtendedProfile,
+  type RootFieldValues,
+} from "@/lib/contact-profile";
 
 const CATEGORIES: { key: ContactCategory; labelKey: "new.business" | "new.personal" | "new.referral" }[] = [
   { key: "business", labelKey: "new.business" },
@@ -21,18 +27,20 @@ export default function EditContactPage({
   const router = useRouter();
   const { t } = useT();
 
-  const [name, setName] = useState("");
-  const [company, setCompany] = useState("");
-  const [position, setPosition] = useState("");
+  const [rootFields, setRootFields] = useState<RootFieldValues>({
+    name: "",
+    birthday: "",
+    location: "",
+    company: "",
+    position: "",
+    howWeMet: "",
+  });
+  const [extendedProfile, setExtendedProfile] = useState<ContactExtendedProfile>(emptyExtendedProfile());
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [location, setLocation] = useState("");
   const [category, setCategory] = useState<ContactCategory>("business");
   const [notes, setNotes] = useState("");
-  const [howWeMet, setHowWeMet] = useState("");
   const [referredBy, setReferredBy] = useState("");
-  const [birthday, setBirthday] = useState("");
-  const [aspirations, setAspirations] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -41,18 +49,20 @@ export default function EditContactPage({
     async function load() {
       try {
         const { contact } = await api.getContact(id);
-        setName(contact.name);
-        setCompany(contact.company || "");
-        setPosition(contact.position || "");
+        setRootFields({
+          name: contact.name,
+          birthday: contact.birthday || "",
+          location: contact.location || "",
+          company: contact.company || "",
+          position: contact.position || "",
+          howWeMet: contact.howWeMet || "",
+        });
+        setExtendedProfile(contact.extendedProfile ?? emptyExtendedProfile());
         setEmail(contact.email || "");
         setPhone(contact.phone || "");
-        setLocation(contact.location || "");
         setCategory(contact.category || "business");
         setNotes(contact.notes || "");
-        setHowWeMet(contact.howWeMet || "");
         setReferredBy(contact.referredBy || "");
-        setBirthday(contact.birthday || "");
-        setAspirations(contact.aspirations || "");
       } catch (err) {
         setError(err instanceof ApiClientError ? err.message : t("common.error"));
       } finally {
@@ -62,24 +72,28 @@ export default function EditContactPage({
     load();
   }, [id, t]);
 
+  function handleRootFieldChange(field: keyof RootFieldValues, value: string) {
+    setRootFields((prev) => ({ ...prev, [field]: value }));
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setSaving(true);
     setError("");
     try {
       await api.updateContact(id, {
-        name: name.trim(),
-        company: company.trim() || undefined,
-        position: position.trim() || undefined,
+        name: rootFields.name.trim(),
+        company: rootFields.company.trim() || undefined,
+        position: rootFields.position.trim() || undefined,
         email: email.trim() || undefined,
         phone: phone.trim() || undefined,
-        location: location.trim() || undefined,
+        location: rootFields.location.trim() || undefined,
         category,
         notes: notes.trim() || undefined,
-        howWeMet: howWeMet.trim() || undefined,
+        howWeMet: rootFields.howWeMet.trim() || undefined,
         referredBy: referredBy.trim() || undefined,
-        birthday: birthday || undefined,
-        aspirations: aspirations.trim() || undefined,
+        birthday: rootFields.birthday || undefined,
+        extendedProfile,
       });
       router.push(`/contacts/${id}`);
     } catch (err) {
@@ -98,7 +112,7 @@ export default function EditContactPage({
   }
 
   return (
-    <div className="mx-auto w-full max-w-lg pb-10">
+    <div className="mx-auto w-full max-w-2xl pb-10">
       <header className="flex items-center justify-between px-5 py-4">
         <button onClick={() => router.back()} className="p-1 text-text">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -114,12 +128,8 @@ export default function EditContactPage({
           <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>
         )}
 
-        <Field label={t("new.fullName")} value={name} onChange={setName} required />
-        <Field label={t("new.companyContext")} value={company} onChange={setCompany} />
-        <Field label="Position" value={position} onChange={setPosition} />
         <Field label={t("detail.primaryEmail")} value={email} onChange={setEmail} type="email" />
         <Field label={t("detail.mobile")} value={phone} onChange={setPhone} />
-        <Field label={t("detail.location")} value={location} onChange={setLocation} />
 
         <fieldset>
           <label className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">{t("new.category")}</label>
@@ -145,15 +155,18 @@ export default function EditContactPage({
           <Field label={t("new.referredBy")} value={referredBy} onChange={setReferredBy} />
         )}
 
-        <Field label={t("new.howWeMet")} value={howWeMet} onChange={setHowWeMet} />
-        <Field label={t("new.birthday")} value={birthday} onChange={setBirthday} type="date" />
-
         <TextArea label={t("new.initialSpark")} value={notes} onChange={setNotes} />
-        <TextArea label={t("detail.aspiration")} value={aspirations} onChange={setAspirations} />
+
+        <ContactProfileAccordion
+          profile={extendedProfile}
+          rootFields={rootFields}
+          onProfileChange={setExtendedProfile}
+          onRootFieldChange={handleRootFieldChange}
+        />
 
         <button
           type="submit"
-          disabled={saving || !name.trim()}
+          disabled={saving || !rootFields.name.trim()}
           className="w-full rounded-2xl bg-primary py-4 text-sm font-bold text-white shadow-lg disabled:opacity-60"
         >
           {saving ? t("common.saving") : t("common.save")}

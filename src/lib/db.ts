@@ -9,6 +9,7 @@ import type {
   UpdateContactInput,
   User,
 } from "./types";
+import { parseExtendedProfile, serializeExtendedProfile } from "./contact-profile";
 
 let client: Client | null = null;
 let schemaReady: Promise<void> | null = null;
@@ -100,6 +101,7 @@ async function initSchema() {
           notes TEXT,
           location TEXT,
           referred_by TEXT,
+          extended_profile TEXT,
           created_at TEXT NOT NULL,
           updated_at TEXT NOT NULL
         )`,
@@ -119,6 +121,7 @@ async function initSchema() {
     `ALTER TABLE contacts ADD COLUMN photo_data BLOB`,
     `ALTER TABLE contacts ADD COLUMN photo_mime TEXT`,
     `ALTER TABLE contacts ADD COLUMN referred_by TEXT`,
+    `ALTER TABLE contacts ADD COLUMN extended_profile TEXT`,
   ];
   for (const sql of migrations) {
     try {
@@ -153,6 +156,7 @@ interface ContactRow {
   notes: string | null;
   location: string | null;
   referred_by: string | null;
+  extended_profile: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -191,6 +195,7 @@ function rowToContact(row: ContactRow): Contact {
     notes: row.notes ?? undefined,
     location: row.location ?? undefined,
     referredBy: row.referred_by ?? undefined,
+    extendedProfile: parseExtendedProfile(row.extended_profile),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -398,12 +403,15 @@ export async function updateContact(
   if (input.photoUrl === null) {
     merged.photoUrl = undefined;
   }
+  if (input.extendedProfile !== undefined) {
+    merged.extendedProfile = input.extendedProfile;
+  }
 
   await execute(
     `UPDATE contacts SET
       name = ?, company = ?, position = ?, phone = ?, email = ?, birthday = ?,
       interests = ?, aspirations = ?, how_we_met = ?, shared_memories = ?,
-      referred_by = ?, category = ?, social_links = ?, photo_url = ?, is_favorite = ?, last_met = ?,
+      referred_by = ?, extended_profile = ?, category = ?, social_links = ?, photo_url = ?, is_favorite = ?, last_met = ?,
       status = ?, activity = ?, notes = ?, location = ?, updated_at = ?
      WHERE id = ? AND user_id = ?`,
     [
@@ -418,6 +426,7 @@ export async function updateContact(
       merged.howWeMet ?? null,
       merged.sharedMemories ?? null,
       merged.referredBy ?? null,
+      merged.extendedProfile ? serializeExtendedProfile(merged.extendedProfile) : null,
       merged.category ?? null,
       merged.socialLinks ? JSON.stringify(merged.socialLinks) : null,
       merged.photoUrl ?? null,

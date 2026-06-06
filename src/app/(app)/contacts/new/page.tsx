@@ -161,7 +161,7 @@ export default function NewContactPage() {
             type="date"
             value={birthday}
             onChange={(e) => setBirthday(e.target.value)}
-            className="mt-2 w-full rounded-xl border border-neutral-dark bg-surface px-4 py-3 text-sm text-text focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            className={`mt-2 w-full rounded-xl border border-neutral-dark bg-surface px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary ${birthday ? "text-text" : "text-text-light date-empty"}`}
           />
         </fieldset>
 
