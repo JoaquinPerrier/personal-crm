@@ -25,6 +25,9 @@ Podés usar `.webp` o `.png` si preferís — actualizá la extensión en `src/l
 1. Copiá el archivo a la carpeta correspondiente con el nombre de la tabla.
 2. Guardá. En dev, recargá la página; no hace falta reiniciar el servidor.
 3. Si el archivo no existe, se muestra el placeholder de gradiente.
+4. **Si reemplazás una imagen con el mismo nombre** y ves la vieja:
+   - En dev: recargá la página (Ctrl+Shift+R si hace falta).
+   - En producción: subí `cacheVersion` en `src/lib/site-images.ts` (ej. `"1"` → `"2"`).
 
 ## Tips
 

@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { siteImageUrl } from "@/lib/site-images";
 
 interface SiteImageProps {
   src: string;
@@ -24,6 +25,18 @@ export default function SiteImage({
 }: SiteImageProps) {
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [resolvedSrc, setResolvedSrc] = useState(() => siteImageUrl(src));
+
+  useEffect(() => {
+    setLoaded(false);
+    setFailed(false);
+    // En dev, forzar recarga al cambiar el archivo (mismo nombre)
+    if (process.env.NODE_ENV === "development") {
+      setResolvedSrc(`${siteImageUrl(src)}&t=${Date.now()}`);
+    } else {
+      setResolvedSrc(siteImageUrl(src));
+    }
+  }, [src]);
 
   if (failed) {
     return <div className={className}>{fallback}</div>;
@@ -33,9 +46,10 @@ export default function SiteImage({
     <div className={className}>
       {!loaded && fallback}
       <Image
-        src={src}
+        src={resolvedSrc}
         alt={alt}
         fill
+        unoptimized
         priority={priority}
         sizes={sizes}
         className={`${imageClassName} transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"}`}
