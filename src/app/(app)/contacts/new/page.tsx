@@ -18,9 +18,14 @@ export default function NewContactPage() {
   const [fullName, setFullName] = useState("");
   const [company, setCompany] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>(["new.business"]);
+  const [referredBy, setReferredBy] = useState("");
+  const [howWeMet, setHowWeMet] = useState("");
+  const [birthday, setBirthday] = useState("");
   const [initialSpark, setInitialSpark] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const isReferral = selectedCategories.includes("new.referral");
 
   const CATEGORIES = [
     { key: "new.business" as const, label: t("new.business") },
@@ -47,8 +52,10 @@ export default function NewContactPage() {
         name: fullName.trim(),
         company: company.trim() || undefined,
         category,
+        referredBy: referredBy.trim() || undefined,
+        howWeMet: howWeMet.trim() || undefined,
+        birthday: birthday || undefined,
         notes: initialSpark.trim() || undefined,
-        howWeMet: initialSpark.trim() || undefined,
       });
       router.push(`/contacts/${contact.id}`);
     } catch (err) {
@@ -122,6 +129,40 @@ export default function NewContactPage() {
               );
             })}
           </div>
+        </fieldset>
+
+        {isReferral && (
+          <fieldset className="mt-6">
+            <label className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">{t("new.referredBy")}</label>
+            <input
+              type="text"
+              value={referredBy}
+              onChange={(e) => setReferredBy(e.target.value)}
+              placeholder={t("new.referredByPlaceholder")}
+              className="mt-2 w-full rounded-xl border border-neutral-dark bg-surface px-4 py-3 text-sm text-text placeholder:text-text-light focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+          </fieldset>
+        )}
+
+        <fieldset className="mt-6">
+          <label className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">{t("new.howWeMet")}</label>
+          <input
+            type="text"
+            value={howWeMet}
+            onChange={(e) => setHowWeMet(e.target.value)}
+            placeholder={t("new.howWeMetPlaceholder")}
+            className="mt-2 w-full rounded-xl border border-neutral-dark bg-surface px-4 py-3 text-sm text-text placeholder:text-text-light focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+        </fieldset>
+
+        <fieldset className="mt-6">
+          <label className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">{t("new.birthday")}</label>
+          <input
+            type="date"
+            value={birthday}
+            onChange={(e) => setBirthday(e.target.value)}
+            className="mt-2 w-full rounded-xl border border-neutral-dark bg-surface px-4 py-3 text-sm text-text focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          />
         </fieldset>
 
         <fieldset className="mt-6">

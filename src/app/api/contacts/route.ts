@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, company, position, phone, email, category, howWeMet, notes, interests, aspirations, location } = body;
+    const { name, company, position, phone, email, category, howWeMet, referredBy, notes, interests, aspirations, location, birthday } = body;
 
     if (!name?.trim()) {
       throw new ApiError(400, "Name is required", "NAME_REQUIRED");
@@ -43,10 +43,12 @@ export async function POST(request: NextRequest) {
       email: email?.trim() || undefined,
       category: validCategories.includes(category) ? category : undefined,
       howWeMet: howWeMet?.trim() || undefined,
+      referredBy: referredBy?.trim() || undefined,
       notes: notes?.trim() || undefined,
       interests: Array.isArray(interests) ? interests : undefined,
       aspirations: aspirations?.trim() || undefined,
       location: location?.trim() || undefined,
+      birthday: birthday?.trim() || undefined,
       status: "new",
     });
 

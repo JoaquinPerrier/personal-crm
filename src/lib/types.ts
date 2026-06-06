@@ -23,6 +23,7 @@ export interface Contact {
   activity?: string;
   notes?: string;
   location?: string;
+  referredBy?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -49,10 +50,12 @@ export interface CreateContactInput {
   email?: string;
   category?: ContactCategory;
   howWeMet?: string;
+  referredBy?: string;
   notes?: string;
   interests?: string[];
   aspirations?: string;
   location?: string;
+  birthday?: string;
   status?: ContactStatus;
 }
 

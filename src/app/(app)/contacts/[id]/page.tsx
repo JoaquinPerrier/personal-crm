@@ -152,10 +152,23 @@ export default function ContactDetailPage({
             <h2 className="font-heading text-2xl font-bold text-text">{t("detail.context")}</h2>
             <p className="mt-5 text-[10px] font-bold uppercase tracking-widest text-text-secondary">{t("detail.origins")}</p>
             <p className="mt-2 text-sm leading-relaxed text-text-secondary">{contact.howWeMet}</p>
+            {contact.referredBy && (
+              <div className="mt-4">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">{t("detail.referredBy")}</p>
+                <p className="mt-1 text-sm text-text-secondary">{contact.referredBy}</p>
+              </div>
+            )}
           </div>
         )}
 
-        {(contact.email || contact.phone || contact.location) && (
+        {!contact.howWeMet && contact.referredBy && (
+          <div className="mt-8">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">{t("detail.referredBy")}</p>
+            <p className="mt-2 text-sm text-text-secondary">{contact.referredBy}</p>
+          </div>
+        )}
+
+        {(contact.email || contact.phone || contact.location || contact.birthday) && (
           <div className="mt-8">
             <p className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">{t("detail.contactChannels")}</p>
             <div className="mt-4 space-y-4">
@@ -175,6 +188,12 @@ export default function ContactDetailPage({
                 <div>
                   <p className="text-xs text-secondary">{t("detail.location")}</p>
                   <p className="mt-0.5 text-sm font-semibold text-text">{contact.location}</p>
+                </div>
+              )}
+              {contact.birthday && (
+                <div>
+                  <p className="text-xs text-secondary">{t("detail.birthday")}</p>
+                  <p className="mt-0.5 text-sm font-semibold text-text">{contact.birthday}</p>
                 </div>
               )}
             </div>

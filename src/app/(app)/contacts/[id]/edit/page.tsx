@@ -30,6 +30,8 @@ export default function EditContactPage({
   const [category, setCategory] = useState<ContactCategory>("business");
   const [notes, setNotes] = useState("");
   const [howWeMet, setHowWeMet] = useState("");
+  const [referredBy, setReferredBy] = useState("");
+  const [birthday, setBirthday] = useState("");
   const [aspirations, setAspirations] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -48,6 +50,8 @@ export default function EditContactPage({
         setCategory(contact.category || "business");
         setNotes(contact.notes || "");
         setHowWeMet(contact.howWeMet || "");
+        setReferredBy(contact.referredBy || "");
+        setBirthday(contact.birthday || "");
         setAspirations(contact.aspirations || "");
       } catch (err) {
         setError(err instanceof ApiClientError ? err.message : t("common.error"));
@@ -73,6 +77,8 @@ export default function EditContactPage({
         category,
         notes: notes.trim() || undefined,
         howWeMet: howWeMet.trim() || undefined,
+        referredBy: referredBy.trim() || undefined,
+        birthday: birthday || undefined,
         aspirations: aspirations.trim() || undefined,
       });
       router.push(`/contacts/${id}`);
@@ -135,8 +141,14 @@ export default function EditContactPage({
           </div>
         </fieldset>
 
+        {category === "refer" && (
+          <Field label={t("new.referredBy")} value={referredBy} onChange={setReferredBy} />
+        )}
+
+        <Field label={t("new.howWeMet")} value={howWeMet} onChange={setHowWeMet} />
+        <Field label={t("new.birthday")} value={birthday} onChange={setBirthday} type="date" />
+
         <TextArea label={t("new.initialSpark")} value={notes} onChange={setNotes} />
-        <TextArea label={t("detail.origins")} value={howWeMet} onChange={setHowWeMet} />
         <TextArea label={t("detail.aspiration")} value={aspirations} onChange={setAspirations} />
 
         <button

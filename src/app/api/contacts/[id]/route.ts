@@ -50,10 +50,12 @@ export async function PUT(request: NextRequest, context: RouteContext) {
       phone: body.phone?.trim() || undefined,
       email: body.email?.trim() || undefined,
       howWeMet: body.howWeMet?.trim() || undefined,
+      referredBy: body.referredBy?.trim() || undefined,
       notes: body.notes?.trim() || undefined,
       aspirations: body.aspirations?.trim() || undefined,
       sharedMemories: body.sharedMemories?.trim() || undefined,
       location: body.location?.trim() || undefined,
+      birthday: body.birthday?.trim() || undefined,
       category: validCategories.includes(body.category) ? body.category : undefined,
     };
 

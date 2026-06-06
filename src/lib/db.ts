@@ -99,6 +99,7 @@ async function initSchema() {
           activity TEXT,
           notes TEXT,
           location TEXT,
+          referred_by TEXT,
           created_at TEXT NOT NULL,
           updated_at TEXT NOT NULL
         )`,
@@ -117,6 +118,7 @@ async function initSchema() {
   const migrations = [
     `ALTER TABLE contacts ADD COLUMN photo_data BLOB`,
     `ALTER TABLE contacts ADD COLUMN photo_mime TEXT`,
+    `ALTER TABLE contacts ADD COLUMN referred_by TEXT`,
   ];
   for (const sql of migrations) {
     try {
@@ -150,6 +152,7 @@ interface ContactRow {
   activity: string | null;
   notes: string | null;
   location: string | null;
+  referred_by: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -187,6 +190,7 @@ function rowToContact(row: ContactRow): Contact {
     activity: row.activity ?? undefined,
     notes: row.notes ?? undefined,
     location: row.location ?? undefined,
+    referredBy: row.referred_by ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -354,9 +358,9 @@ export async function createContact(
   const status: ContactStatus = input.status ?? "new";
   await execute(
     `INSERT INTO contacts (
-      id, user_id, name, company, position, phone, email, interests, aspirations,
-      how_we_met, category, status, notes, location, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      id, user_id, name, company, position, phone, email, birthday, interests, aspirations,
+      how_we_met, referred_by, category, status, notes, location, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       id,
       userId,
@@ -365,9 +369,11 @@ export async function createContact(
       input.position ?? null,
       input.phone ?? null,
       input.email ?? null,
+      input.birthday ?? null,
       input.interests ? JSON.stringify(input.interests) : null,
       input.aspirations ?? null,
       input.howWeMet ?? null,
+      input.referredBy ?? null,
       input.category ?? null,
       status,
       input.notes ?? null,
@@ -395,9 +401,9 @@ export async function updateContact(
 
   await execute(
     `UPDATE contacts SET
-      name = ?, company = ?, position = ?, phone = ?, email = ?,
+      name = ?, company = ?, position = ?, phone = ?, email = ?, birthday = ?,
       interests = ?, aspirations = ?, how_we_met = ?, shared_memories = ?,
-      category = ?, social_links = ?, photo_url = ?, is_favorite = ?, last_met = ?,
+      referred_by = ?, category = ?, social_links = ?, photo_url = ?, is_favorite = ?, last_met = ?,
       status = ?, activity = ?, notes = ?, location = ?, updated_at = ?
      WHERE id = ? AND user_id = ?`,
     [
@@ -406,10 +412,12 @@ export async function updateContact(
       merged.position ?? null,
       merged.phone ?? null,
       merged.email ?? null,
+      merged.birthday ?? null,
       merged.interests ? JSON.stringify(merged.interests) : null,
       merged.aspirations ?? null,
       merged.howWeMet ?? null,
       merged.sharedMemories ?? null,
+      merged.referredBy ?? null,
       merged.category ?? null,
       merged.socialLinks ? JSON.stringify(merged.socialLinks) : null,
       merged.photoUrl ?? null,
