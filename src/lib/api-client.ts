@@ -38,6 +38,9 @@ export interface AuthUser {
   id: string;
   name: string;
   email: string;
+  headline?: string;
+  location?: string;
+  socialLinks?: import("./types").UserSocialLinks;
   createdAt: string;
 }
 
@@ -64,6 +67,13 @@ export const api = {
 
   me() {
     return request<{ user: AuthUser }>("/api/auth/me");
+  },
+
+  updateProfile(data: import("./types").UpdateUserProfileInput) {
+    return request<{ user: AuthUser }>("/api/profile", {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
   },
 
   forgotPassword(email: string) {

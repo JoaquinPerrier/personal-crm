@@ -42,22 +42,43 @@ export async function PUT(request: NextRequest, context: RouteContext) {
     const body = await request.json();
 
     const validCategories: ContactCategory[] = ["business", "personal", "refer"];
-    const updateData = {
-      ...body,
-      name: body.name?.trim(),
-      company: body.company?.trim() || undefined,
-      position: body.position?.trim() || undefined,
-      phone: body.phone?.trim() || undefined,
-      email: body.email?.trim() || undefined,
-      howWeMet: body.howWeMet?.trim() || undefined,
-      referredBy: body.referredBy?.trim() || undefined,
-      notes: body.notes?.trim() || undefined,
-      aspirations: body.aspirations?.trim() || undefined,
-      sharedMemories: body.sharedMemories?.trim() || undefined,
-      location: body.location?.trim() || undefined,
-      birthday: body.birthday?.trim() || undefined,
-      category: validCategories.includes(body.category) ? body.category : undefined,
-    };
+    const updateData = { ...body };
+    const optionalTextFields = [
+      "company",
+      "position",
+      "phone",
+      "email",
+      "howWeMet",
+      "referredBy",
+      "notes",
+      "aspirations",
+      "sharedMemories",
+      "location",
+      "birthday",
+    ] as const;
+
+    if ("name" in body) {
+      updateData.name = body.name?.trim();
+    }
+    for (const field of optionalTextFields) {
+      if (field in body) {
+        updateData[field] = body[field]?.trim() || undefined;
+      }
+    }
+    if ("category" in body) {
+      updateData.category = validCategories.includes(body.category)
+        ? body.category
+        : undefined;
+    }
+    if ("lastMet" in body) {
+      if (
+        typeof body.lastMet !== "string" ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(body.lastMet)
+      ) {
+        throw new ApiError(400, "Invalid last contact date", "INVALID_DATE");
+      }
+      updateData.lastMet = body.lastMet;
+    }
 
     const contact = await updateContact(user.id, id, updateData);
     if (!contact) {

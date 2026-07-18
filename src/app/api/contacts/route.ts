@@ -3,7 +3,21 @@ import { randomUUID } from "crypto";
 import { getContactsByUser, createContact } from "@/lib/db";
 import { getSessionFromRequest } from "@/lib/auth";
 import { ApiError, jsonOk, jsonError } from "@/lib/api-helpers";
-import type { ContactCategory } from "@/lib/types";
+import type { Contact, ContactCategory } from "@/lib/types";
+
+const SOCIAL_KEYS = ["linkedin", "instagram", "facebook", "whatsapp", "twitter"] as const;
+
+function sanitizeSocialLinks(input: unknown): Contact["socialLinks"] | undefined {
+  if (input == null || typeof input !== "object") return undefined;
+  const links: NonNullable<Contact["socialLinks"]> = {};
+  for (const key of SOCIAL_KEYS) {
+    const value = (input as Record<string, unknown>)[key];
+    if (typeof value === "string" && value.trim()) {
+      links[key] = value.trim().slice(0, 200);
+    }
+  }
+  return Object.keys(links).length > 0 ? links : undefined;
+}
 
 export const runtime = "nodejs";
 
@@ -49,6 +63,7 @@ export async function POST(request: NextRequest) {
       aspirations: aspirations?.trim() || undefined,
       location: location?.trim() || undefined,
       birthday: birthday?.trim() || undefined,
+      socialLinks: sanitizeSocialLinks(body.socialLinks),
       status: "new",
     });
 

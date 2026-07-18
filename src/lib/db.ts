@@ -7,7 +7,9 @@ import type {
   ContactStatus,
   CreateContactInput,
   UpdateContactInput,
+  UpdateUserProfileInput,
   User,
+  UserSocialLinks,
 } from "./types";
 import { parseExtendedProfile, serializeExtendedProfile } from "./contact-profile";
 
@@ -53,6 +55,9 @@ async function initSchema() {
           name TEXT NOT NULL,
           email TEXT UNIQUE NOT NULL,
           password_hash TEXT NOT NULL,
+          headline TEXT,
+          location TEXT,
+          social_links TEXT,
           created_at TEXT NOT NULL,
           updated_at TEXT NOT NULL
         )`,
@@ -122,6 +127,9 @@ async function initSchema() {
     `ALTER TABLE contacts ADD COLUMN photo_mime TEXT`,
     `ALTER TABLE contacts ADD COLUMN referred_by TEXT`,
     `ALTER TABLE contacts ADD COLUMN extended_profile TEXT`,
+    `ALTER TABLE users ADD COLUMN social_links TEXT`,
+    `ALTER TABLE users ADD COLUMN headline TEXT`,
+    `ALTER TABLE users ADD COLUMN location TEXT`,
   ];
   for (const sql of migrations) {
     try {
@@ -220,7 +228,7 @@ export async function createUser(
      VALUES (?, ?, ?, ?, ?, ?)`,
     [id, name, email.toLowerCase(), passwordHash, now, now]
   );
-  return { id, name, email: email.toLowerCase(), createdAt: now };
+  return { id, name, email: email.toLowerCase(), socialLinks: {}, createdAt: now };
 }
 
 export async function findUserByEmail(email: string) {
@@ -242,7 +250,8 @@ export async function findUserByEmail(email: string) {
 
 export async function findUserById(id: string): Promise<User | undefined> {
   const result = await execute(
-    `SELECT id, name, email, created_at FROM users WHERE id = ?`,
+    `SELECT id, name, email, headline, location, social_links, created_at
+     FROM users WHERE id = ?`,
     [id]
   );
   const row = result.rows[0] as Record<string, unknown> | undefined;
@@ -251,8 +260,33 @@ export async function findUserById(id: string): Promise<User | undefined> {
     id: String(row.id),
     name: String(row.name),
     email: String(row.email),
+    headline: row.headline ? String(row.headline) : undefined,
+    location: row.location ? String(row.location) : undefined,
+    socialLinks: parseJson<UserSocialLinks>(row.social_links, {}),
     createdAt: String(row.created_at),
   };
+}
+
+export async function updateUserProfile(
+  userId: string,
+  input: UpdateUserProfileInput
+): Promise<void> {
+  const existing = await findUserById(userId);
+  if (!existing) return;
+
+  const merged = { ...existing, ...input };
+  const now = new Date().toISOString();
+  await execute(
+    `UPDATE users SET headline = ?, location = ?, social_links = ?, updated_at = ?
+     WHERE id = ?`,
+    [
+      merged.headline ?? null,
+      merged.location ?? null,
+      JSON.stringify(merged.socialLinks ?? {}),
+      now,
+      userId,
+    ]
+  );
 }
 
 export async function updateUserPassword(userId: string, passwordHash: string) {
@@ -364,8 +398,8 @@ export async function createContact(
   await execute(
     `INSERT INTO contacts (
       id, user_id, name, company, position, phone, email, birthday, interests, aspirations,
-      how_we_met, referred_by, category, status, notes, location, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      how_we_met, referred_by, category, social_links, status, notes, location, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       id,
       userId,
@@ -380,6 +414,7 @@ export async function createContact(
       input.howWeMet ?? null,
       input.referredBy ?? null,
       input.category ?? null,
+      input.socialLinks ? JSON.stringify(input.socialLinks) : null,
       status,
       input.notes ?? null,
       input.location ?? null,

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useT } from "@/lib/i18n";
+import { useAuth } from "@/lib/auth-context";
+import { hasSocialLinks } from "@/lib/social-links";
 
 const tabs = [
   {
@@ -57,11 +59,15 @@ const tabs = [
 export default function BottomNav() {
   const pathname = usePathname();
   const { t } = useT();
+  const { user, loading } = useAuth();
+
+  const profileNeedsAttention = !loading && !!user && !hasSocialLinks(user.socialLinks);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-neutral-dark bg-surface py-2">
       {tabs.map((tab) => {
         const active = pathname.startsWith(tab.href);
+        const showAlert = tab.href === "/profile" && profileNeedsAttention;
         return (
           <Link
             key={tab.key}
@@ -70,7 +76,17 @@ export default function BottomNav() {
               active ? "text-primary" : "text-text-light"
             }`}
           >
-            {tab.icon(active)}
+            <span className="relative">
+              {tab.icon(active)}
+              {showAlert && (
+                <span
+                  className="absolute -right-1.5 -top-1.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-amber-500 text-[9px] font-bold leading-none text-white ring-2 ring-surface"
+                  title={t("profile.socialAlert")}
+                >
+                  !
+                </span>
+              )}
+            </span>
             <span className="text-[10px] font-semibold uppercase tracking-wider">
               {t(tab.key)}
             </span>

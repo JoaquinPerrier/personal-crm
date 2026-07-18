@@ -18,7 +18,13 @@ export interface Contact {
   sharedMemories?: string;
   tags?: string[];
   category?: ContactCategory;
-  socialLinks?: { linkedin?: string; instagram?: string; twitter?: string };
+  socialLinks?: {
+    linkedin?: string;
+    instagram?: string;
+    facebook?: string;
+    whatsapp?: string;
+    twitter?: string;
+  };
   photoUrl?: string;
   isFavorite?: boolean;
   lastMet?: string;
@@ -32,11 +38,27 @@ export interface Contact {
   updatedAt: string;
 }
 
+export interface UserSocialLinks {
+  linkedin?: string;
+  instagram?: string;
+  facebook?: string;
+  whatsapp?: string;
+}
+
 export interface User {
   id: string;
   name: string;
   email: string;
+  headline?: string;
+  location?: string;
+  socialLinks?: UserSocialLinks;
   createdAt: string;
+}
+
+export interface UpdateUserProfileInput {
+  headline?: string;
+  location?: string;
+  socialLinks?: UserSocialLinks;
 }
 
 export interface AuthLogEntry {
@@ -61,6 +83,7 @@ export interface CreateContactInput {
   location?: string;
   birthday?: string;
   status?: ContactStatus;
+  socialLinks?: Contact["socialLinks"];
 }
 
 export interface UpdateContactInput extends Partial<CreateContactInput> {
@@ -68,7 +91,6 @@ export interface UpdateContactInput extends Partial<CreateContactInput> {
   lastMet?: string;
   activity?: string;
   sharedMemories?: string;
-  socialLinks?: Contact["socialLinks"];
   photoUrl?: string | null;
   extendedProfile?: ContactExtendedProfile;
 }

@@ -10,6 +10,7 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { api, type AuthUser, ApiClientError } from "@/lib/api-client";
+import type { UpdateUserProfileInput } from "@/lib/types";
 
 interface AuthContextValue {
   user: AuthUser | null;
@@ -18,6 +19,7 @@ interface AuthContextValue {
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
+  updateProfile: (data: UpdateUserProfileInput) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -61,8 +63,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push("/login");
   };
 
+  const updateProfile = useCallback(async (data: UpdateUserProfileInput) => {
+    const { user } = await api.updateProfile(data);
+    setUser(user);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, refresh }}>
+    <AuthContext.Provider
+      value={{ user, loading, login, register, logout, refresh, updateProfile }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -68,6 +68,11 @@ const translations = {
     "detail.warmConnection": "Warm Connection",
     "detail.lastSpoke": "Last spoke {days} days ago",
     "detail.lastSpokeWeek": "Last spoke 1 week ago",
+    "detail.lastSpokeToday": "Last spoke today",
+    "detail.lastContact": "Last contact",
+    "detail.updateLastContact": "Update last contact",
+    "detail.saveLastContact": "Save date",
+    "detail.lastContactSaved": "Last contact updated",
     "detail.changePhoto": "Change profile photo",
     "detail.photoHint": "Tap to upload a photo (max 5 MB)",
     "detail.removePhoto": "Remove photo",
@@ -165,6 +170,23 @@ const translations = {
     "profile.mackaySubtitle": "Expand each section to capture what matters about this relationship.",
     "profile.progress": "{answered} of {total} questions answered",
     "profile.sectionProgress": "{answered} of {total} answered",
+
+    // Profile info
+    "profile.aboutTitle": "About You",
+    "profile.headline": "Title / Profession",
+    "profile.headlinePlaceholder": "Full Stack Developer | TypeScript · React",
+    "profile.locationLabel": "Location",
+    "profile.locationPlaceholder": "City, Country",
+
+    // Profile social links
+    "profile.socialTitle": "Social Media",
+    "profile.socialSubtitle": "Add your social profiles so your connections can find you.",
+    "profile.socialAlert": "Complete your profile by adding at least one social network.",
+    "profile.saved": "Profile saved!",
+    "profile.linkedinPlaceholder": "linkedin.com/in/your-profile",
+    "profile.instagramPlaceholder": "@your.username",
+    "profile.facebookPlaceholder": "facebook.com/your-profile",
+    "profile.whatsappPlaceholder": "+1 555 123 4567",
   },
   es: {
     // BottomNav
@@ -229,6 +251,11 @@ const translations = {
     "detail.warmConnection": "Conexión Cálida",
     "detail.lastSpoke": "Última charla hace {days} días",
     "detail.lastSpokeWeek": "Última charla hace 1 semana",
+    "detail.lastSpokeToday": "Última charla hoy",
+    "detail.lastContact": "Último contacto",
+    "detail.updateLastContact": "Actualizar último contacto",
+    "detail.saveLastContact": "Guardar fecha",
+    "detail.lastContactSaved": "Último contacto actualizado",
     "detail.changePhoto": "Cambiar foto de perfil",
     "detail.photoHint": "Tocá para subir una foto (máx. 5 MB)",
     "detail.removePhoto": "Quitar foto",
@@ -326,6 +353,23 @@ const translations = {
     "profile.mackaySubtitle": "Expandí cada sección para registrar lo que importa de esta relación.",
     "profile.progress": "{answered} de {total} preguntas respondidas",
     "profile.sectionProgress": "{answered} de {total} respondidas",
+
+    // Profile info
+    "profile.aboutTitle": "Sobre Vos",
+    "profile.headline": "Título / Profesión",
+    "profile.headlinePlaceholder": "Full Stack Developer | TypeScript · React",
+    "profile.locationLabel": "Ubicación",
+    "profile.locationPlaceholder": "Ciudad, País",
+
+    // Profile social links
+    "profile.socialTitle": "Redes Sociales",
+    "profile.socialSubtitle": "Agregá tus redes para que tus conexiones puedan encontrarte.",
+    "profile.socialAlert": "Completá tu perfil agregando al menos una red social.",
+    "profile.saved": "¡Perfil guardado!",
+    "profile.linkedinPlaceholder": "linkedin.com/in/tu-perfil",
+    "profile.instagramPlaceholder": "@tu.usuario",
+    "profile.facebookPlaceholder": "facebook.com/tu-perfil",
+    "profile.whatsappPlaceholder": "+54 9 11 1234 5678",
   },
 } as const;
 
