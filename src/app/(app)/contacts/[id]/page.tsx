@@ -104,6 +104,7 @@ export default function ContactDetailPage({
     : daysSince === 7
       ? t("detail.lastSpokeWeek")
       : t("detail.lastSpoke", { days: daysSince ?? 0 });
+  const isColdConnection = daysSince !== null && daysSince > 30;
 
   return (
     <div className="mx-auto w-full max-w-lg">
@@ -143,8 +144,16 @@ export default function ContactDetailPage({
           <div className="flex items-center justify-between gap-3">
             <div className="flex min-w-0 items-center gap-4">
               <div className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-secondary" />
-                <span className="text-xs font-bold text-text">{t("detail.warmConnection")}</span>
+                <span
+                  className={`h-2.5 w-2.5 shrink-0 rounded-full ${
+                    isColdConnection ? "bg-blue-400" : "bg-secondary"
+                  }`}
+                />
+                <span className="text-xs font-bold text-text">
+                  {isColdConnection
+                    ? t("detail.coldConnection")
+                    : t("detail.warmConnection")}
+                </span>
               </div>
               <span className="truncate text-xs text-text-light">{lastSpokeText}</span>
             </div>
